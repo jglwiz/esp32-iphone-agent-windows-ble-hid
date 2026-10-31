@@ -23,6 +23,7 @@
 
 本目录是独立的串口 → ESP32-S3 → BLE HID 项目，以此目录为文档根。
 
+- 常驻串口服务：[PC 服务设计与使用](pc/doc/service.md)。维护 FastAPI、组合动作与截图返回时读取。
 - 微信完整实机用例：[测试流程与主代理验收](tests/case1_wechat_send_hello/doc/test-case.md)。运行子代理操作测试、比较耗时时读取。
 - 项目概览：[英文 README](README.md) / [中文 README](README_CN.md)（更新时保持内容一致）；使用、构建与恢复：[使用说明](doc/user/usage.md)。
 - 设计取舍、协议候选与后续验收：[实施计划](doc/dev/plan.md)。修改架构或规划工作时读取；其中候选内容不代表已实现。

@@ -88,3 +88,5 @@ python -m venv .venv
 ## 许可证
 
 [MIT](LICENSE)。允许修改、再分发和商业使用，须保留版权及许可声明。第三方依赖仍遵循各自的许可证。
+
+可选的 Python FastAPI 常驻控制服务复用串口会话，将动作结果和 AirPlay 截图合并返回，固件无需修改。安装 `pc/requirements-service.txt` 后运行 `python pc/service.py`；服务占用串口时不要并行运行直接串口客户端。详见 [服务说明](pc/doc/service.md)。

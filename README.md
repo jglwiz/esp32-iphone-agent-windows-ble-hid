@@ -88,3 +88,5 @@ The source is published under the MIT License, with standalone firmware dependen
 ## License
 
 [MIT](LICENSE). Modification, redistribution, and commercial use are permitted, provided the copyright and permission notices are retained. Third-party dependencies remain under their respective licenses.
+
+A persistent local FastAPI controller now reuses the serial session and returns action results with AirPlay screenshots. See the [service guide](pc/doc/service.md) (Chinese); firmware remains unchanged. Install `pc/requirements-service.txt` and run `python pc/service.py` for the optional service. Do not run direct serial clients while it owns the port.
