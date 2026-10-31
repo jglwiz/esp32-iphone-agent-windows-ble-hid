@@ -61,4 +61,8 @@ Hardware tests run separately from unit tests. The WeChat case operates a real i
 
 ## Release readiness
 
-The repository has been organized as a separate project, but public release preparation is not complete. The build script still depends on tooling in the original parent workspace, the screenshot service must be provided separately, and a project license has not been selected. See the [pre-release tasks](doc/dev/plan.md#独立发布前待办) (Chinese).
+The source is published under the MIT License. The build script still depends on tooling in the original parent workspace, and the screenshot service must be provided separately. See the [remaining release tasks](doc/dev/plan.md#独立发布前待办) (Chinese).
+
+## License
+
+[MIT](LICENSE). Modification, redistribution, and commercial use are permitted, provided the copyright and permission notices are retained. Third-party dependencies remain under their respective licenses.
