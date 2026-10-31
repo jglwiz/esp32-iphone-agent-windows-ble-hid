@@ -1,4 +1,5 @@
 .build/
+.tools/
 .build-deps/
 firmware/**/build/
 .runtime/

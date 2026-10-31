@@ -14,6 +14,28 @@ Firmware 0.2.0 has been tested on a Waveshare ESP32-S3 and an iPhone 17e with ke
 
 The primary tested environment is Windows with a CH343 serial interface and a board with 16 MB Flash / 8 MB PSRAM. Other ESP32 variants, operating systems, and iOS versions have not been comprehensively tested.
 
+## Build firmware from a fresh clone
+
+Requirements: 64-bit Windows, PowerShell 5.1 or later, Git, an internet connection, and several GB of free disk space. Arduino IDE and a global Arduino CLI installation are not required. Python is only needed for the PC client below.
+
+```powershell
+git clone https://github.com/jglwiz/esp32-iphone-agent-windows-ble-hid.git
+cd esp32-iphone-agent-windows-ble-hid
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1
+```
+
+The first run installs Arduino CLI **1.5.1** and ESP32 core **3.3.12** inside `.tools/`, downloads NimBLE-Arduino **2.3.8** into `.build-deps/`, and compiles into `.build/`. CLI and NimBLE archives are SHA-256 checked. Later runs reuse installed tools and downloads. No parent workspace or global Arduino libraries are used. The default board configuration is ESP32-S3 with 16 MB Flash and 8 MB OPI PSRAM.
+
+The script temporarily maps the repository to a free drive letter to avoid Windows compiler path-length limits, and removes the mapping on completion or error. Keep at least one drive letter from D: through Z: available.
+
+To install dependencies without compiling, append `-SetupOnly`. The default command only compiles. After checking the board, serial port, and backup, build and upload explicitly:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload -Port COM4
+```
+
+Replace `COM4` with your board's port; install its serial driver if Windows does not expose a port. See the [usage guide](doc/user/usage.md) (Chinese) for recovery and troubleshooting.
+
 ## Quick start: PC client
 
 Prerequisites: the board is already running this project's firmware, the iPhone is paired with `S3-iPhone-HID`, and AssistiveTouch is enabled. See the [usage guide](doc/user/usage.md) (Chinese) for firmware build prerequisites.
@@ -47,7 +69,7 @@ Confirm the target on the phone before sending keyboard or mouse input, followin
 | doc/dev/ | Design decisions, implementation plan, and hardware validation records |
 | AGENTS.md | Agent working conventions and documentation navigation |
 
-Local `.build/`, `.build-deps/`, `.runtime/`, `.backups/`, and test `runs/` directories are excluded from version control.
+Local `.tools/`, `.build/`, `.build-deps/`, `.runtime/`, `.backups/`, and test `runs/` directories are excluded from version control.
 
 ## Development and testing
 
@@ -61,7 +83,7 @@ Hardware tests run separately from unit tests. The WeChat case operates a real i
 
 ## Release readiness
 
-The source is published under the MIT License. The build script still depends on tooling in the original parent workspace, and the screenshot service must be provided separately. See the [remaining release tasks](doc/dev/plan.md#独立发布前待办) (Chinese).
+The source is published under the MIT License, with standalone firmware dependency installation and compilation. The optional screenshot service must still be provided separately. See the [remaining release tasks](doc/dev/plan.md#独立发布前待办) (Chinese).
 
 ## License
 

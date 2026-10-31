@@ -14,6 +14,28 @@
 
 当前主要验证环境为 Windows、CH343 串口、16 MB Flash / 8 MB PSRAM 开发板。未验证所有 ESP32 型号、其他操作系统或全部 iOS 版本。
 
+## 从干净克隆构建固件
+
+前提：64 位 Windows、PowerShell 5.1 或更新版本、Git、网络连接及数 GB 可用磁盘空间。无需安装 Arduino IDE 或全局 Arduino CLI。Python 仅供下文的 PC 客户端使用。
+
+```powershell
+git clone https://github.com/jglwiz/esp32-iphone-agent-windows-ble-hid.git
+cd esp32-iphone-agent-windows-ble-hid
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1
+```
+
+首次运行会在仓库 `.tools/` 内安装 Arduino CLI **1.5.1** 和 ESP32 core **3.3.12**，将 NimBLE-Arduino **2.3.8** 下载到 `.build-deps/`，并编译到 `.build/`。CLI 与 NimBLE 压缩包均校验 SHA-256。后续运行复用已安装工具和下载缓存，不依赖父工作区或全局 Arduino 库。默认板型配置为 ESP32-S3、16 MB Flash、8 MB OPI PSRAM。
+
+脚本会临时将仓库映射为一个空闲盘符，规避 Windows 编译器路径长度限制；完成或报错时解除映射。请在 D: 至 Z: 中保留至少一个空闲盘符。
+
+仅安装依赖、不编译时，在命令后添加 `-SetupOnly`。默认命令只编译；核对开发板、串口和备份后，显式构建并刷写：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload -Port COM4
+```
+
+将 `COM4` 替换为实际开发板串口；Windows 未显示串口时需安装相应串口驱动。恢复和故障排查见 [使用说明](doc/user/usage.md)。
+
 ## 快速开始：PC 客户端
 
 前提：开发板已刷入本项目固件；iPhone 已配对 `S3-iPhone-HID`，开启辅助触控。固件构建前提见 [使用说明](doc/user/usage.md)。
@@ -47,7 +69,7 @@ python -m venv .venv
 | doc/dev/ | 设计取舍、实施计划、实机验证记录 |
 | AGENTS.md | Agent 工作约定和文档导航 |
 
-本地 `.build/`、`.build-deps/`、`.runtime/`、`.backups/` 和测试 `runs/` 不纳入版本控制。
+本地 `.tools/`、`.build/`、`.build-deps/`、`.runtime/`、`.backups/` 和测试 `runs/` 不纳入版本控制。
 
 ## 开发与测试
 
@@ -61,7 +83,7 @@ python -m venv .venv
 
 ## 发布状态
 
-源码已采用 MIT 许可证公开发布。构建脚本仍依赖原父工作区的工具链，截图服务需要另行提供。具体事项见 [发布完善待办](doc/dev/plan.md#独立发布前待办)。
+源码已采用 MIT 许可证公开发布，支持独立安装固件依赖与编译。可选的截图服务仍需另行提供。具体事项见 [发布完善待办](doc/dev/plan.md#独立发布前待办)。
 
 ## 许可证
 

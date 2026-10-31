@@ -1,6 +1,6 @@
 # 安装、使用、构建与恢复
 
-以下命令均从项目根目录执行。Python CLI 可独立使用；固件构建脚本目前仍依赖原工作区工具链布局，详见构建章节。
+以下命令均从项目根目录执行。Python CLI 与固件构建均可在独立克隆中使用，详见根目录 README 的安装步骤。
 
 
 
@@ -24,17 +24,23 @@ $python = '.\.venv\Scripts\python.exe'
 
 ## 实现与构建
 
-构建脚本要求父目录已有 `.tools/arduino-cli/arduino-cli.exe` 和安装了 ESP32 core 3.3.12 的 `.tools/arduino-data/`。此布局来自原开发工作区，不随仓库分发，目前尚无独立工具链安装脚本。不要把以下命令理解为干净克隆后的完整安装步骤。
+构建要求 64 位 Windows、PowerShell 5.1 或更新版本、网络连接和数 GB 磁盘空间。脚本会自动下载固定版本 Arduino CLI 1.5.1、ESP32 core 3.3.12 和 NimBLE-Arduino 2.3.8，不要求 Arduino IDE、全局 CLI 或父目录工具链。CLI 与 NimBLE 压缩包使用固定 SHA-256 校验；ESP32 包由 Arduino CLI 按官方索引安装。工具、索引、下载缓存和用户库目录均位于本仓库 `.tools/`，调用后恢复原 Arduino 路径环境变量。
+
+首次安装需要下载大型工具链。下载中断后可重跑原命令；若提示压缩包哈希不匹配，删除错误信息中指定的本地缓存文件后重试。需要访问 GitHub、Arduino 和 Espressif 官方下载服务。脚本不会改写系统执行策略；README 中的 Bypass 仅用于当前 PowerShell 子进程。构建失败会立即停止，不继续刷写。
+
+ESP32 GCC 会拼接包含多层 `../` 的头文件路径，在较深的克隆目录中可能报 `bits/c++config.h` 不存在，即使文件实际存在。脚本通过 Windows `subst` 临时将仓库映射为 D: 至 Z: 中的空闲盘符，安装、编译和刷写均使用此短路径，完成或异常退出时解除映射。文件仍保存在原仓库内，不复制工具链，也不更改系统长路径设置；没有空闲盘符时直接报错。不要同时对同一克隆运行多个构建。
 
 - [固件](../../firmware/serial_ble_hid/serial_ble_hid.ino)：UART0 / Serial0，115200 8N1；Arduino ESP32 3.3.12 + 独立 **NimBLE-Arduino 2.3.8**。不注册 USB HID，不启用 Wi-Fi。
 - [报告描述符](../../firmware/serial_ble_hid/hid_reports.h)：键盘 ID 1，鼠标 ID 2；BLE 报告值不额外前置 Report ID。
 - [CLI](../../pc/bridge.py)：标准库与 pyserial，显式控制 DTR/RTS；超时或重启后不自动重放动作。
-- [构建脚本](../../scripts/build.ps1)：显式使用父目录 .tools 下的工具链，输出 .build/；下载固定版本 NimBLE-Arduino 到 .build-deps/ 并校验 SHA-256，原工具链源码不修改。`-Upload -Port COM4` 只在确认目标端口与备份后使用。
+- [构建脚本](../../scripts/build.ps1)：工具链保存在本仓库 .tools/，NimBLE-Arduino 位于 .build-deps/，编译中间文件位于 .build/work/，固件输出位于 .build/。这些目录不提交 Git。`-SetupOnly` 只安装依赖；默认只编译；`-Upload -Port COM4` 只在确认目标端口与备份后使用，不允许与 `-SetupOnly` 同用。
 
 ```powershell
-.\scripts\build.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1
+# 可选：仅安装依赖
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -SetupOnly
 # 已确认端口与备份后：
-.\scripts\build.ps1 -Upload -Port COM4
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload -Port COM4
 & $python -m unittest discover -s tests -v
 # 实机串口协议检查：仅状态与释放，不输入字符或移动指针。
 & $python tests\serial_smoke.py
