@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'pc'))
 try:
     from pydantic import ValidationError
     from service import Action, SerialWorker
+    from frame_capture import Frame
 except ModuleNotFoundError as exc:
     if exc.name in ('fastapi', 'pydantic'):
         raise unittest.SkipTest('Install pc/requirements-service.txt for service tests')
@@ -34,12 +35,18 @@ class FakeBridge:
         self.request('release_all')
 
 
+def fake_frame(age=0):
+    async def read(client):
+        return Frame(b'jpeg-test', time.time()-age, 'test:1')
+    return read
+
+
 class ServiceTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.fake = FakeBridge()
         self.worker = SerialWorker(bridge_factory=lambda **kw: self.fake,
-            frame_reader=lambda: (b'jpeg-test', time.time()), runtime=Path(self.tmp.name))
+            frame_reader=fake_frame(), runtime=Path(self.tmp.name))
         self.worker.start()
 
     def tearDown(self):
@@ -78,7 +85,7 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(self.fake.calls, before)
 
     def test_capture_failure_does_not_replay_input(self):
-        self.worker.frame_reader = lambda: (b'old', time.time()-60)
+        self.worker.frames.reader = fake_frame(60)
         a = Action(request_id='stale', steps=[{'op':'click'}], timeout_seconds=1, settle_ms=0)
         f, _ = self.worker.submit(a)
         r = f.result(3)
@@ -94,7 +101,7 @@ class ServiceTests(unittest.TestCase):
 
     def test_frame_must_follow_settle_not_just_input(self):
         # Simulate capture backlog: timestamp after input but before settle cannot pass.
-        self.worker.frame_reader = lambda: (b'lagging', time.time()-.5)
+        self.worker.frames.reader = fake_frame(.5)
         f, _ = self.worker.submit(Action(request_id='settle', steps=[{'op':'click'}],
                                         settle_ms=700, timeout_seconds=1))
         r = f.result(3)

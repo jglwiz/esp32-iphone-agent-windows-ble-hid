@@ -6,18 +6,19 @@ import base64
 from concurrent.futures import Future
 from contextlib import asynccontextmanager
 import json
+import os
 from pathlib import Path
 import queue
 import threading
 import time
 from typing import Literal
-import urllib.request
 import uuid
 
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from bridge import Bridge, ascii_key
+from frame_capture import FrameCapture
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -66,9 +67,11 @@ class Cancelled(Exception):
 
 
 class SerialWorker:
-    def __init__(self, bridge_factory=Bridge, frame_reader=None, runtime=None):
+    def __init__(self, bridge_factory=Bridge, frame_reader=None, runtime=None,
+                 frame_url='http://127.0.0.1:8891/frame'):
         self.bridge_factory = bridge_factory
-        self.frame_reader = frame_reader or self.read_frame
+        self.frames = FrameCapture(frame_url, frame_reader,
+            allow_legacy=os.environ.get('BLE_HID_ALLOW_LEGACY_FRAMES') == '1')
         self.runtime = runtime or ROOT / '.runtime' / 'service'
         self.runtime.mkdir(parents=True, exist_ok=True)
         self.jobs = queue.Queue(maxsize=8)
@@ -108,24 +111,24 @@ class SerialWorker:
             if len(self.entries) >= 1000:
                 raise OverflowError('Request history full; restart explicitly when idle')
             future, cancel = Future(), threading.Event()
-            deadline = time.monotonic() + action.timeout_seconds
+            deadline = time.perf_counter() + action.timeout_seconds
             self.jobs.put_nowait((action, future, cancel, deadline))
             self.entries[action.request_id] = (encoded, future, cancel)
             return future, cancel
 
     def check(self, cancel, deadline):
-        if cancel.is_set() or self.stop_event.is_set() or time.monotonic() > deadline:
+        if cancel.is_set() or self.stop_event.is_set() or time.perf_counter() > deadline:
             raise Cancelled('Cancelled/deadline exceeded; no replay; partial execution possible')
 
     def send(self, cancel, deadline, op, **args):
         self.check(cancel, deadline)
-        return self.bridge.request(op, timeout=min(3, max(.1, deadline-time.monotonic())), **args)
+        return self.bridge.request(op, timeout=min(3, max(.1, deadline-time.perf_counter())), **args)
 
     def pause(self, seconds, cancel, deadline):
-        until = time.monotonic() + seconds
-        while time.monotonic() < until:
+        until = time.perf_counter() + seconds
+        while time.perf_counter() < until:
             self.check(cancel, deadline)
-            time.sleep(min(.1, max(0, until-time.monotonic())))
+            time.sleep(min(.1, max(0, until-time.perf_counter())))
             self.send(cancel, deadline, 'ping')
 
     def step(self, s, cancel, deadline):
@@ -155,40 +158,57 @@ class SerialWorker:
         elif s.op in ('mouse_down', 'mouse_up'): send('mouse.' + s.op.split('_')[1], button=s.button)
         elif s.op == 'wait': self.pause(s.seconds, cancel, deadline)
 
-    @staticmethod
-    def read_frame():
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-        with opener.open('http://127.0.0.1:8891/frame', timeout=.7) as response:
-            if response.status != 200:
-                raise RuntimeError(f'No frame: HTTP {response.status}')
-            return response.read(), float(response.headers['X-Frame-Time'])
-
     def capture(self, after, cancel, deadline):
-        end = min(deadline, time.monotonic()+2.5)
-        error = 'No fresh frame'
-        while time.monotonic() < end:
-            self.check(cancel, deadline)
+        # Network I/O must not starve the firmware's two-second session lease.
+        # Only this owner thread touches Bridge; the capture thread owns async HTTP.
+        end = min(deadline, time.perf_counter()+2.5)
+        abort = threading.Event()
+        finished = threading.Event()
+        future = Future()
+
+        def read():
             try:
-                data, timestamp = self.frame_reader()
-                age = time.time()-timestamp
-                if -1 <= age <= 5 and (after is None or timestamp >= after):
-                    return {'jpeg_base64': base64.b64encode(data).decode(),
-                            'frame_time': timestamp, 'age_seconds': age}
-                error = 'Frame predates action completion or is stale'
+                future.set_result(asyncio.run(self.frames.capture(after, end,
+                    lambda: abort.is_set() or cancel.is_set() or self.stop_event.is_set())))
             except Exception as exc:
-                error = str(exc)
-            self.send(cancel, deadline, 'ping')
-            time.sleep(.08)
-        raise RuntimeError(error)
+                future.set_exception(exc)
+            finally:
+                finished.set()
+
+        thread = threading.Thread(target=read, name='frame-reader')
+        thread.start()
+        heartbeat_error = None
+        next_ping = time.perf_counter()+.4
+        try:
+            while not finished.wait(.01):
+                if cancel.is_set() or self.stop_event.is_set() or time.perf_counter() >= end:
+                    continue  # HTTP task observes these independently; don't start a new serial wait.
+                if heartbeat_error is None and time.perf_counter() >= next_ping:
+                    try:
+                        self.status = self.bridge.request('ping', timeout=min(1, max(.01, end-time.perf_counter())))
+                    except Exception as exc:
+                        heartbeat_error = f'Heartbeat during capture failed: {exc}'
+                        self.fault = heartbeat_error
+                        abort.set()
+                    next_ping = time.perf_counter()+.4
+        finally:
+            abort.set()
+            thread.join()
+        if heartbeat_error:
+            return {'state': 'unavailable', 'reason': heartbeat_error}, None
+        return future.result()
 
     def execute(self, action, cancel, deadline):
         start = time.time()
         result = {'request_id': action.request_id, 'instance_id': self.instance_id,
-                  'started_at': start, 'input_state': 'not_started', 'completed_steps': 0}
+                  'started_at': start, 'input_state': 'not_started', 'completed_steps': 0,
+                  'capture': {'state': 'skipped', 'reason': 'Capture disabled' if not action.capture
+                              else 'Action or release did not complete'}}
         release_ok = False
         try:
             if self.fault or not self.bridge:
                 raise RuntimeError(self.fault or 'Serial unavailable; restart service explicitly')
+            self.check(cancel, deadline)
             for s in action.steps:
                 result['input_state'] = 'partial_unknown'
                 self.step(s, cancel, deadline)
@@ -205,6 +225,12 @@ class SerialWorker:
                     self.fault = f'Release failed: {exc}; restart explicitly'
                     result['release_error'] = self.fault
         result['released'] = release_ok
+        result['action'] = {'state': result['input_state']}
+        result['release'] = {'state': 'released' if release_ok else 'unknown'}
+        if 'error' in result:
+            result['action']['error'] = result['error']
+        if 'release_error' in result:
+            result['release']['error'] = result['release_error']
         result['input_finished_at'] = time.time()
         if action.capture and release_ok and 'error' not in result:
             try:
@@ -212,10 +238,17 @@ class SerialWorker:
                 # A newly published frame can still precede UI settlement. Require a frame
                 # produced AFTER the settle interval, not merely after HID submission.
                 result['settled_at'] = time.time()
-                result['frame'] = self.capture(result['settled_at'] if action.steps else None,
-                                               cancel, deadline)
+                result['capture'], frame = self.capture(result['settled_at'] if action.steps else None,
+                                                        cancel, deadline)
+                if frame is not None:
+                    result['frame'] = frame
+                else:
+                    result['capture_error'] = result['capture']['reason']
             except Exception as exc:
                 result['capture_error'] = str(exc)  # Do not retry input when only capture fails.
+                result['capture'] = {'state': 'cancelled' if isinstance(exc, Cancelled)
+                                     and (cancel.is_set() or self.stop_event.is_set()) else 'unavailable',
+                                     'reason': str(exc)}
         result['finished_at'] = time.time()
         return result
 
@@ -250,6 +283,7 @@ class SerialWorker:
                 except OSError as exc:
                     result.pop('frame', None)
                     result['capture_error'] = f'Evidence persistence failed: {exc}'
+                    result['capture'] = {'state': 'unavailable', 'reason': result['capture_error']}
                     self.fault = str(exc)
                 future.set_result(result)
                 self.active_id = None
@@ -257,7 +291,10 @@ class SerialWorker:
             if self.bridge: self.bridge.close()
             while not self.jobs.empty():
                 _, future, _, _ = self.jobs.get_nowait()
-                future.set_result({'error': 'Service stopped before execution', 'input_state': 'not_started'})
+                future.set_result({'error': 'Service stopped before execution', 'input_state': 'not_started',
+                                   'action': {'state': 'not_started'}, 'released': False,
+                                   'release': {'state': 'unknown'},
+                                   'capture': {'state': 'skipped', 'reason': 'Service stopped before execution'}})
 
 
 def create_app(worker=None):
@@ -274,6 +311,7 @@ def create_app(worker=None):
     @app.get('/health')
     def health():
         return {'service': 'ble-hid-controller', 'instance_id': owner.instance_id,
+                'allow_legacy_frames': owner.frames.allow_legacy,
                 'fault': owner.fault, 'status': owner.status, 'active_id': owner.active_id,
                 'queue_size': owner.jobs.qsize()}
 

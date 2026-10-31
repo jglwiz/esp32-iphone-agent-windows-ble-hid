@@ -1,0 +1,2 @@
+-r ../pc/requirements-service.txt
+Pillow==13.0.0

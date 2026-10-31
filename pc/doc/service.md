@@ -13,6 +13,8 @@ python pc/service.py
 
 使用一个服务进程、一个 worker，不开启 reload 或多 worker。服务占用串口期间，不运行 bridge.py 或其他直接访问串口的程序。退出服务释放输入并关闭连接；不关闭 AirPlay。串口故障会显示在 `/health`，不自动重放或重连执行未知动作，确认现场状态后显式重启服务。
 
+取帧适配器依赖 httpx 0.28.1（已列入 requirements-service.txt）。帧源需支持原子快照 v1：`/frame` 保留 JPEG 正文与 `X-Frame-Time`，并提供 `X-Frame-Snapshot-Version: 1` 和非空 `X-Frame-Id`；204 无帧响应也带版本标识。对应源码位于既有帧源项目的 `server/hidagent/frame_snapshot.py`、`screen_pipe.py` 和 `capture_worker.py`。旧帧源缺少版本时返回 capture.state=invalid 和明确的升级提示，不自动重启或替换现有服务。2026-10-31 已部署快照 v1 帧源并验证；当前控制服务以 allow_legacy_frames=false 统一使用 v1，不启用旧接口兼容。
+
 ## Agent 使用
 
 `GET /health` 返回最近一次串口状态、故障、活动请求、服务 instance_id。`POST /action` 提交以下结构：
@@ -33,6 +35,8 @@ python pc/service.py
 
 `service_client.act(steps, output)` 调用服务并将返回的 JPEG 保存为 output，同时写入 `.json`（兼容 live_case.py）、`.request.json`、`.result.json`。客户端不访问串口，不自动重试。Agent 应在同一次工具调用里执行 act 并用 view_image 展示 output，避免操作与看图拆成两轮。
 
+客户端新增可选 `base_url`，默认仍为 `http://127.0.0.1:8892`，用于隔离实例和测试；原调用方式不变。
+
 ```python
 from service_client import act
 result = act([{"op": "tap", "dx": 20, "dy": -10}], "run/after.jpg")
@@ -52,9 +56,15 @@ steps=[] 为只观察；静止页面超过5秒无新帧时可能报截图过期�
 
 返回 input_state、completed_steps、released、时间戳与 frame。partial_unknown 表示可能执行部分动作；capture_error 单独描述截图失败。reports_sent只说明报告提交，不表示手机效果通过。日志保存在项目 `.runtime/service/serial.jsonl` 和 actions.jsonl；含输入文字和截图，仅本地保存。
 
+增量结构保留上述全部旧字段：action.state 与 input_state 一致；release.state 为 released 或 unknown；capture.state 为 available、stale_or_unknown、unavailable、cancelled、invalid 或 skipped。capture=false、动作或释放失败时为 skipped；取帧失败继续返回 capture_error，无成功 frame。frame 内保留 jpeg_base64、frame_time、age_seconds，新增 frame_id、snapshot_version、received_at、after_action 和有动作时的 settled_at。JPEG 不在 capture 内重复存储。after_action 只说明时间关系，不证明手机上的业务成功。
+
+pc/frame_capture.py 使用独立异步 HTTP 读取线程，总预算取请求剩余时间与 2.5 秒的较小值，单次读取最多 0.7 秒，正文最多 8 MiB；整体截止覆盖慢速正文及分块响应。读取结束会取消并回收异步任务和线程。串口所有者继续每约 0.4 秒续租，取帧线程不调用 Bridge；否则截图等待可能超过固件 2 秒租约。心跳失败会置 fault、终止截图并保留输入结果，不重连重放。取消可以独立终止网络读取，但已在途的串口心跳仍可能等待其最长 1 秒的回执；隔离网络测试的 200 ms 返回余量不代表真实串口端到端上限。
+
 ## 验证
 
 `python -m unittest discover -s tests -v` 覆盖旧客户端及服务的取消释放、去重、整批校验、过期队列任务不执行、截图失败不重放。真实输入仍用微信用例由操作子代理执行、主代理看图验收，且记录实际模型和推理强度。性能比较区分服务请求耗时、操作起止帧和总交付时间，不以单轮差异宣称严格模型或API提速倍数。
+
+隔离测试依赖使用 `python -m pip install -r tests/requirements.txt`；测试仅使用模拟串口、合成 JPEG 和随机 loopback 端口。新增覆盖真实 HTTP 客户端与输出文件、原始帧去重、settled_at 边界、旧帧源能力拒绝、慢速读取取消、关闭及断开请求、证据写盘失败、截图期间租约续期。此前微信输入用例属于旧服务版本；快照 v1 已部署，并通过只读取帧和空步骤请求验证。
 
 实机发现：仅时间戳新鲜仍可能出现编辑状态尚未稳定。关键草稿编辑建议 settle_ms=1500，发送前再做一次不修改文字的观察（必要时明确微移刷新画面），两次均精确匹配再提交。禁止将旧草稿截图触发的修正盲目重复。首轮服务测试缺失首字母，作为失败记录保留。
 
