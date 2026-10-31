@@ -1,0 +1,19 @@
+.build/
+.build-deps/
+firmware/**/build/
+.runtime/
+.backups/
+__pycache__/
+*.pyc
+
+# Local Python environment used by the quick start
+.venv/
+
+# Local credentials and environment settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
