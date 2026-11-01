@@ -89,4 +89,6 @@ python -m venv .venv
 
 [MIT](LICENSE)。允许修改、再分发和商业使用，须保留版权及许可声明。第三方依赖仍遵循各自的许可证。
 
-可选的 Python FastAPI 常驻控制服务复用串口会话，将动作结果和 AirPlay 截图合并返回，固件无需修改。安装 `pc/requirements-service.txt` 后运行 `python pc/service.py`；服务占用串口时不要并行运行直接串口客户端。详见 [服务说明](pc/doc/service.md)。
+可选的 Python FastAPI 常驻控制服务复用串口会话，将动作结果和 AirPlay 截图合并返回。默认使用视觉相对后端；原生绝对 HID 与自动校准已完成局部实机验证，点击受验证范围约束，全屏与跨应用尚未验收。安装 `pc/requirements-service.txt` 后运行 `python pc/service.py`；服务占用串口时不要并行运行直接串口客户端。详见 [服务说明](pc/doc/service.md)。
+
+固件 **0.3.3** 为当前实测iPhone增加修饰键先行报告：普通HID文本已正确输入`a_A-1`，Ctrl+Space再次显示选中的输入语言，客户端text调用不变。设计与证据见[修饰键时序](firmware/serial_ble_hid/doc/keyboard-modifiers.md)，最新范围与限制见[原生HID验收](pc/doc/native-hid-validation.md)；上文旧版本结果为历史记录。

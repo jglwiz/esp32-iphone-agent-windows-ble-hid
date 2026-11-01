@@ -42,6 +42,21 @@ def fake_frame(age=0):
 
 
 class ServiceTests(unittest.TestCase):
+    def test_modifier_only_usage_and_reserved_error_usages(self):
+        action = Action(request_id='modifier-only', capture=False, steps=[
+            {'op':'key_down', 'usage':0, 'modifiers':2},
+            {'op':'key_down', 'usage':4, 'modifiers':2},
+            {'op':'key_up'}])
+        result = self.worker.submit(action)[0].result(3)
+        self.assertEqual(result['input_state'], 'reports_sent')
+        self.assertTrue(result['released'])
+        keys = [(op, kw) for op, kw in self.fake.calls if op.startswith('keyboard.')]
+        self.assertEqual([(op, kw.get('usage'), kw.get('modifiers')) for op, kw in keys],
+                         [('keyboard.down',0,2), ('keyboard.down',4,2), ('keyboard.up',None,None)])
+        for usage in (1,2,3):
+            with self.assertRaises(ValidationError):
+                Action(request_id='error-usage', steps=[{'op':'key','usage':usage}])
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.fake = FakeBridge()

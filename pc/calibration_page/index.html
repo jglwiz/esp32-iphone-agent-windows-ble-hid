@@ -1,0 +1,11 @@
+<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>HID calibration</title>
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:white;touch-action:none;cursor:pointer}.m{position:fixed;width:12px;height:12px;background:#0ff;pointer-events:none}#a{left:20px;top:40px}#b{right:20px;top:40px}#c{left:20px;bottom:30px}#d{right:20px;bottom:30px}p{position:fixed;top:0;width:100%;text-align:center;font:12px sans-serif;color:#777;pointer-events:none}</style>
+<p id="clock">HID calibration</p><div class="m" id="a"></div><div class="m" id="b"></div><div class="m" id="c"></div><div class="m" id="d"></div>
+<script>
+const token=new URLSearchParams(location.search).get('token'), session=Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join('');let probe=null, chain=Promise.resolve();
+const send=(path,body)=>fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,session,...body})});
+const info=()=>({width:innerWidth,height:innerHeight});
+send('/ready',info());
+setInterval(async()=>{ document.getElementById('clock').textContent='HID calibration '+new Date().toISOString(); try {const r=await fetch('/probe?token='+encodeURIComponent(token)+'&session='+encodeURIComponent(session),{cache:'no-store'});if(r.ok){const x=await r.json();if(x.probe && x.probe!==probe){probe=x.probe;await send('/ack',{probe});}}}catch(e){} },150);
+for(const kind of ['pointerdown','pointerup','click','pointercancel'])document.body.addEventListener(kind,e=>{const item={probe,kind,x:e.clientX,y:e.clientY,...info(),client_time:Date.now()};chain=chain.then(()=>send('/event',item));});
+</script>

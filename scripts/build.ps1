@@ -1,6 +1,6 @@
 #requires -Version 5.1
 [CmdletBinding()]
-param([string]$Port, [switch]$Upload, [switch]$SetupOnly)
+param([string]$Port, [switch]$Upload, [switch]$SetupOnly, [string]$ExistingToolsDir)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 if ($env:OS -ne 'Windows_NT' -or -not [Environment]::Is64BitOperatingSystem) {
@@ -30,6 +30,11 @@ try {
     $cliVersion = '1.5.1'
     $coreVersion = '3.3.12'
     $cliDir = Join-Path $toolsDir "arduino-cli-$cliVersion"
+    if ($ExistingToolsDir) {
+        $toolsDir = (Resolve-Path -LiteralPath $ExistingToolsDir).Path
+        $cliVersion = '1.5.2-rc.1'
+        $cliDir = Join-Path $toolsDir 'arduino-cli'
+    }
     $cli = Join-Path $cliDir 'arduino-cli.exe'
     $indexUrl = 'https://espressif.github.io/arduino-esp32/package_esp32_index.json'
     $fqbn = 'esp32:esp32:esp32s3:USBMode=hwcdc,CDCOnBoot=default,FlashSize=16M,PSRAM=opi,PartitionScheme=app3M_fat9M_16MB'
@@ -57,7 +62,8 @@ try {
 
     New-Item -ItemType Directory -Force -Path $toolsDir, $depsDir | Out-Null
     $archive = Join-Path $toolsDir "arduino-cli-$cliVersion.zip"
-    Get-VerifiedArchive "https://github.com/arduino/arduino-cli/releases/download/v$cliVersion/arduino-cli_${cliVersion}_Windows_64bit.zip" $archive 'FABE42E0EB04D00E776A66178299FF95A46C623DBC260F997E58FD514853DD40'
+    if (-not $ExistingToolsDir) { Get-VerifiedArchive "https://github.com/arduino/arduino-cli/releases/download/v$cliVersion/arduino-cli_${cliVersion}_Windows_64bit.zip" $archive 'FABE42E0EB04D00E776A66178299FF95A46C623DBC260F997E58FD514853DD40' }
+    if ($ExistingToolsDir -and -not (Test-Path -LiteralPath $cli)) { throw 'Existing CLI not found.' }
     if (-not (Test-Path -LiteralPath $cli)) {
         Expand-Archive -LiteralPath $archive -DestinationPath $cliDir -Force
     }
@@ -79,6 +85,7 @@ try {
         }
         $installed = (Invoke-Arduino core list --format json | Out-String | ConvertFrom-Json)
         $core = @($installed.platforms | Where-Object { $_.id -eq 'esp32:esp32' -and $_.installed_version -eq $coreVersion })
+        if ($core.Count -eq 0 -and $ExistingToolsDir) { throw "Required ESP32 core $coreVersion not installed in existing tools." }
         if ($core.Count -eq 0) {
             Invoke-Arduino core update-index
             Invoke-Arduino core install "esp32:esp32@$coreVersion"

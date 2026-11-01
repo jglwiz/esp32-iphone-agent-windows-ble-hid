@@ -1,5 +1,33 @@
 # 常驻串口控制服务
 
+[原生绝对 HID 与自动校准集成计划](native-hid-integration-plan.md) 已部分实施；全屏、跨应用与性能验收尚未完成，默认仍为视觉后端。
+
+## 原生绝对 HID（局部验证）
+
+正式固件 0.3.0 增加独立绝对报告。`coordinate_backend="native_hid"` 可显式选择；默认 `visual_relative` 保持不变。原生动作在单串口 worker 内提交，不进行视觉纠偏；每次预检仍读取一张近期 snapshot v1 检查截图几何，即使 `capture=false` 也不跳过。`report_submitted` / `click_submitted` 只代表提交，业务效果须另外核验。请求前预检失败返回 `not_started`；输入结果未知时不得自动重放。
+
+启动前需设置 `BLE_HID_DEVICE_ID`（固件 status 返回的稳定设备 ID）、`BLE_HID_PHONE_ID`（明确绑定的手机标识）和 `BLE_HID_CALIBRATION_HOST`（手机可访问的本机地址）；可选 `BLE_HID_CALIBRATION_PORT`（默认 8893）和 `BLE_HID_COORDINATE_BACKEND`（默认 `visual_relative`）。控制 API 只监听本机；校准页接收器独立监听局域网、只服务令牌页面与事件，不暴露控制路由。不要将令牌网址分享给其他人。确保指定端口空闲；服务不修改防火墙。
+
+使用 `service_client.start_calibration(request_id, "calibrate")` 创建异步任务，打开结果中的 `page_url`，用 `get_calibration(job_id)` 查看阶段，用 `cancel_calibration(job_id)` 取消。`verify` 用于重启或断连后的既有配置复验。页面和待测目标通过随机会话、探针和确认关联，必须收到完整 down/up/click 链；失败不重试。校准的候选证据先保存为 `validation_passed` / `not_committed`，`calibration-profile.json` 原子替换是唯一激活提交点。重启后配置为 `needs_verification`。任务采样期间普通动作返回冲突；等待打开页面期间仍可导航。
+
+原生点击仅在当前已验证范围内允许，超范围或配置未验证均在输入前拒绝。仅为诊断移动，可显式设置 `diagnostic_uncalibrated=true` 使用未校准恒等映射；该选项不能用于点击，也不扩大配置范围。`move_to` / `click_at` 客户端包装和 `act(..., coordinate_backend="native_hid", capture=False)` 保留现有调用形状。CLI 的 `--operation` 支持 `action`、`health`、`start-calibration`、`get-calibration`、`cancel-calibration`，旧 `--steps` / `--output` 用法仍可用。
+
+2026-10-31 实机：正式局部校准完成 6 训练、5 留出和 5 验证点击；主代理审计 16 组完整事件。重启后 `needs_verification` 门禁拒绝点击，复验 10 次通过；范围外点击和等待页取消均无输入。当前验证范围仅 `[186,455,310,651]` 截图像素，不能用于主屏和微信全流程。范围内 click_at 的同 ID 重试只产生一次绝对点击命令和三份报告；最终截图显示指针，但该测试页面接收器已关闭，不能据此声称页面收到点击。全屏、跨应用、断连、三轮同条件性能及正式原生微信尚未验收。
+
+## 视觉相对后端
+
+`POST /action` 的 steps 新增 `move_to`、`click_at`，必须提供 `x`、`y`，单位为当前 496×1080 AirPlay 截图像素（x=0..495、y=0..1079）。示例：`{"op":"move_to","x":250,"y":540}`；`{"op":"click_at","x":459,"y":578}`。旧 `move`/`tap` 仍使用相对 HID 单位。
+
+算法位于 `pc/absolute_pointer.py`、`pc/pointer_vision.py`，正式服务不依赖 task/lab。整个视觉循环在单一串口队列任务中运行，不递归调用 HTTP，不允许与其他请求交错。每次启动重新定位，必要时有限换方向探测和重建参考；建议先 move_to(250,540) 验证居中，但不能靠未知相对位移假定已到中央。动作中始终释放按钮，不支持与 key_down/mouse_down 同请求组合。
+
+按距离分配最多16次移动；连续两次实际位移小于1.5 px时返回 no_progress，阻止点击和后续步骤。误差≤6 px才到位；click_at再次读取快照检查位置及参考图，然后单次左键点击。无输入复查允许使用最近5秒内的已有v1快照（静止屏幕可能不产新帧），不能把两次读取同一frame_id称为两帧独立证据；真实移动仍要求动作等待之后的帧。页面变化、截图失败、取消、截止时间、未知位置均停止，不自动重放。视觉循环即使capture=false也必须取帧；该选项只控制最终返回图。整体沿用请求截止时间，绝对动作建议 timeout_seconds=45，不在一个请求里塞入许多跨页目标。
+
+返回 `absolute` 数组包含每步定位轨迹、状态、内部请求数和 evidence_directory；其 requests 是内部动作/截图轮数，不是 HTTP 请求数。中间图片和元数据保存在 `.runtime/service/absolute/`。失败时保留 partial_unknown 和 released；HTTP 200 本身不代表动作成功。click_submitted也不代表 UI 已命中，仍需检查返回画面。capture_error只表示最终截图失败，不重新点击。
+
+当前支持当前截图尺寸及约14 px半径指针；极限圆角可能不可达，不能保证任意坐标。旧参考图不跨页面复用。点击前检查与真正点击仍有时间间隔，不保证动态页面原子命中。固件不变。
+
+整合实机验收（2026-10-31）：同一 6.1 Terra / Medium 子代理通过正式接口先居中，再完成微信文件传输助手测试，主代理看图通过；消息 `test_20261031_104014_b3e5` 单次发送。耗时274.258秒，19次HTTP、39轮内部绝对定位动作/取帧；旧相对服务成功轮119.455秒，本轮没有提速。包含一次定位门禁失败后居中恢复及75.191秒诊断协调间隔，不作严格同条件性能结论。28项自动化测试通过，静止复查修正后4项绝对动作回归测试再次通过。完整证据见 `tests/case1_wechat_send_hello/runs/20261031_104014_b3e5/evaluation.md`。
+
 本服务保留现有固件协议，在 PC 上复用单一串口会话，并将动作、界面等待、新鲜截图合并到一个 HTTP 请求。模型不再为每次操作启动串口客户端、握手、关闭端口，再单独请求截图。API 监听 `127.0.0.1:8892`；现有 AirPlay 取帧仍使用 8891，旧 USB 后端 8890 不参与。
 
 ## 运行
@@ -29,7 +57,7 @@ python pc/service.py
 }
 ```
 
-步骤支持 move、click、tap（相对移动后点击）、drag（当前位置按住并相对拖动）、scroll、text、key、key_down/key_up、mouse_down/mouse_up、wait。dx/dy 为 HID 相对单位，不是截图像素；本轮未实现绝对坐标校准，不能声称 tap(x,y) 已可靠定位。按钮编号 1–3；按键 usage、modifiers 与现有串口客户端一致。
+步骤支持 move、click、tap（相对移动后点击）、drag（当前位置按住并相对拖动）、scroll、text、key、key_down/key_up、mouse_down/mouse_up、wait。dx/dy 为 HID 相对单位，不是截图像素；tap 的 dx/dy 仍为相对单位；绝对目标须用 move_to/click_at 的 x/y。按钮编号 1–3；按键 usage、modifiers 与现有串口客户端一致。
 
 所有步骤先整体校验再执行。每次最多32步、256个可打印ASCII字符；text不含回车，发送消息必须显式提供 Enter 操作。临时按住只允许在同一请求内组合，整个请求结束或失败都释放输入，不支持跨HTTP请求维持按键。可把移动、按下、拖动、释放作为一次请求提交，但跨页面仍需先看结果。
 
@@ -75,3 +103,9 @@ pc/frame_capture.py 使用独立异步 HTTP 读取线程，总预算取请求剩
 实际报告在 `tests/case1_wechat_send_hello/runs/20261031_092538_7cee/evaluation.md`（相对项目根）。13项单元测试通过，固件未修改。保持同一串口会话、合并动作与截图已经实测；坐标校准、自动重连和长期运行仍待完善。
 
 去重返回原请求的原始截图与时间戳，不是重新观察；需要当前画面时用新的只观察请求。日志/截图写入失败会使服务进入fault并保留输入结果，不能据此重新执行原动作。
+
+## 固件0.3.3修饰键兼容
+
+0.3.3在固件内部先建立修饰键（200ms），再按下字符并分阶段释放，修复本机iPhone上同时报告Shift与字符时大写/下划线丢失的问题。PC `text`、`key`、`key_down`调用不变；仅含修饰键的操作增加等待。高级诊断可用usage=0表示modifier-only，usage1–3禁止。正式接口已实机输入精确a_A-1，Ctrl+Space显示English (US)选中；设计、失败对照和升级边界见[修饰键时序](../../firmware/serial_ble_hid/doc/keyboard-modifiers.md)。
+
+当前原生动作的几何预检对有同源绑定的校准配置可读取静态旧帧（仅确认几何），会保留真实时间并标记cached_static；动作后的结果截图仍要求新鲜。未校准诊断只允许move_to，不允许click_at；旧配置没有帧绑定时诊断移动要求5秒内新鲜几何帧。不能据cached_static声称界面当前状态已确认。

@@ -50,6 +50,27 @@ class FrameCapture:
                 raise InvalidFrame('Invalid JPEG envelope')
             return Frame(bytes(data), timestamp, frame_id, 1 if atomic else 0)
 
+    async def geometry(self, deadline, cancelled):
+        """Read one v1 snapshot for geometry only; age is reported, never refreshed."""
+        if cancelled(): return {'state':'cancelled','reason':'Capture cancelled'}, None
+        remaining=min(.7,max(0,deadline-time.perf_counter()))
+        if remaining<=0: return {'state':'unavailable','reason':'Geometry deadline expired'}, None
+        try:
+            async with httpx.AsyncClient(trust_env=False, timeout=None) as client:
+                frame=await asyncio.wait_for(self.reader(client),timeout=remaining)
+            if cancelled():return {'state':'cancelled','reason':'Capture cancelled'}, None
+            if frame is None:return {'state':'unavailable','reason':'HTTP 204 / no frame'},None
+            age=time.time()-frame.timestamp
+            if frame.snapshot_version!=1 or not frame.frame_id or not math.isfinite(frame.timestamp) or age < -1:
+                raise InvalidFrame('Invalid v1 geometry metadata')
+            if not frame.jpeg.startswith(b'\xff\xd8') or not frame.jpeg.endswith(b'\xff\xd9'):
+                raise InvalidFrame('Invalid JPEG envelope')
+            return {'state':'available'},{'jpeg_base64':base64.b64encode(frame.jpeg).decode(),
+                'frame_id':frame.frame_id,'frame_time':frame.timestamp,'received_at':time.time(),
+                'age_seconds':age,'after_action':None,'snapshot_version':1,'atomic_snapshot':True}
+        except (InvalidFrame, ValueError) as exc:return {'state':'invalid','reason':str(exc)},None
+        except (TimeoutError,httpx.HTTPError) as exc:return {'state':'unavailable','reason':str(exc) or 'Frame read timed out'},None
+
     async def capture(self, after, deadline, cancelled):
         """deadline uses perf_counter; caller releases all input before entering."""
         end = min(deadline, time.perf_counter() + 2.5)
