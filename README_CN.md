@@ -24,6 +24,38 @@
 
 当前先由使用者保证摆放方向，后端尚未实现自动识别或补偿。调整手机朝向后，先在安全空白区域进行小幅无点击移动，通过新截图确认方向和实际落点，再执行点击；异常时停止定位操作。原地 `click()` 只点击实际指针所在位置，不会自动纠正此前的移动或落点。摆正手机也不能代替这一步确认；历史调查见 [方向异常记录](backend/doc/direction-root-cause.md)。
 
+## iPhone Skill：项目内与全局使用
+
+仓库自带 [iphone skill](.agents/skills/iphone/SKILL.md)，源文件位于 `.agents/skills/iphone/`。在本仓库中打开支持该发现目录的 Codex，即可使用 `$iphone`；若未出现在列表中，重新加载或重启客户端。可直接发送：
+
+> 使用本仓库的 $iphone skill，按 doc/user/deployment.md 检查并部署环境，完成只读验收，报告需要我操作手机和尚未验证的部分。
+
+不需要 skill 安装工具。需要从其他项目全局使用时，先在仓库根目录执行以下 PowerShell，手动创建用户级链接：
+
+```powershell
+$iphoneRepo = (Get-Location).Path
+$iphoneSkills = Join-Path $HOME '.agents/skills'
+$iphoneTarget = Join-Path $iphoneSkills 'iphone'
+if (Test-Path -LiteralPath $iphoneTarget) { throw '目标已存在，请先确认要使用的 skill，勿直接覆盖。' }
+New-Item -ItemType Directory -Path $iphoneSkills -Force | Out-Null
+New-Item -ItemType Junction -Path $iphoneTarget -Target (Join-Path $iphoneRepo '.agents/skills/iphone')
+```
+
+也可将最后一行替换为 `Copy-Item -LiteralPath (Join-Path $iphoneRepo '.agents/skills/iphone') -Destination $iphoneTarget -Recurse`，生成独立副本。链接跟随源 checkout：`git pull`、切分支和编辑链接目标都会影响全局 skill；经常切分支时，建议链接到另一个稳定 checkout。复制的副本需要手动同步，并与后端 API 版本核对。
+
+本 skill 约定两个可选环境变量；它们由 AI/客户端调用流程读取，不是后端部署配置字段：
+
+```powershell
+$env:IPHONE_AGENT_REPO = $iphoneRepo
+$env:IPHONE_AGENT_BASE_URL = 'http://127.0.0.1:8892'
+```
+
+用户在当前任务中明确指定的值优先于环境变量。局部或链接使用可从 skill 的真实位置发现仓库；全局复制需要显式指定仓库路径才能部署、启动或复用仓库客户端。健康与截图 HTTP 接口不依赖源码目录。环境变量仅影响当前终端及其子进程；已有 GUI 未继承时，在聊天中明确提供仓库路径和后端地址。
+
+已有 `~/.codex/skills/iphone`、`~/.agents/skills/iphone` 或其他同名入口时，先自行选择保留哪个入口；同名 skill 不自动合并，也不要依赖局部覆盖全局。局部与全局可能同时被发现，调用时明确所用路径。
+
+skill 与后端代码在同一 Git 仓库维护；API 变化时在同一次变更中更新 skill。公共 skill 及其参考资料提交 Git；`backend/.deployment.json`、虚拟环境、`.runtime` 中的截图和日志保持忽略。管理 token 不放入 skill。正常操作复用后端 HTTP API，不另开串口。
+
 ## 从干净克隆构建固件
 
 需要完整部署控制 API 与 AirPlay 截图时，先阅读 [从干净克隆部署（供 AI Agent）](doc/user/deployment.md)。其中包含后端安装脚本、首次配置、手机操作和只读验收；可直接交给 AI 按步骤执行。
@@ -74,6 +106,7 @@ python -m venv backend/.venv
 | --- | --- |
 | firmware/serial_ble_hid/ | Arduino 固件及 HID 报告描述符 |
 | backend/ | 统一 API、ESP32/AirPlay 子模块、包、测试与文档 |
+| .agents/skills/iphone/ | 随代码维护的 iPhone skill，可局部使用或手动链接为全局入口 |
 | scripts/ | 固件构建、刷写脚本 |
 | tests/ | 客户端单元测试、实机串口检查与诊断工具 |
 | tests/case1_wechat_send_hello/ | 独立实机用例，包含工具、doc/ 和忽略提交的 runs/ |

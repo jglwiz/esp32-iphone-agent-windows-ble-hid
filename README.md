@@ -26,6 +26,38 @@ On 2026-11-03, after the user locked orientation, a movement-only retest showed 
 
 For now, the user must maintain the correct placement; the backend does not automatically detect or compensate for orientation. After changing placement, make small movements without clicking in a safe blank area, and use fresh screenshots to confirm direction and actual position before clicking. Stop positioning if the response is wrong. The in-place `click()` only clicks at the actual pointer position; it does not correct previous movement or placement. Upright placement does not replace this check. See the historical [direction investigation](backend/doc/direction-root-cause.md) (Chinese).
 
+## iPhone skill: repository and user scope
+
+The repository includes an [iphone skill](.agents/skills/iphone/SKILL.md) at `.agents/skills/iphone/`. Open this repository in Codex with support for this discovery directory and invoke `$iphone`. Reload or restart the client if it is missing from the selector. Example request:
+
+> Use this repository's $iphone skill to deploy the environment following doc/user/deployment.md, run read-only acceptance checks, and report required phone steps and unverified behavior.
+
+No skill installer is needed. To use it from other projects, run this PowerShell from the repository root to create a user-scoped link:
+
+```powershell
+$iphoneRepo = (Get-Location).Path
+$iphoneSkills = Join-Path $HOME '.agents/skills'
+$iphoneTarget = Join-Path $iphoneSkills 'iphone'
+if (Test-Path -LiteralPath $iphoneTarget) { throw 'Target already exists. Choose the intended skill before replacing anything.' }
+New-Item -ItemType Directory -Path $iphoneSkills -Force | Out-Null
+New-Item -ItemType Junction -Path $iphoneTarget -Target (Join-Path $iphoneRepo '.agents/skills/iphone')
+```
+
+Alternatively replace the last line with `Copy-Item -LiteralPath (Join-Path $iphoneRepo '.agents/skills/iphone') -Destination $iphoneTarget -Recurse` to create an independent copy. A link follows its source checkout: pulling, switching branches, or editing through the link affects the global skill. Use a separate stable checkout if you frequently switch branches. A copy requires manual updates and backend API compatibility checks.
+
+The skill recognizes two optional environment variables in the agent/client workflow; these are not backend deployment configuration fields:
+
+```powershell
+$env:IPHONE_AGENT_REPO = $iphoneRepo
+$env:IPHONE_AGENT_BASE_URL = 'http://127.0.0.1:8892'
+```
+
+Explicit task values take precedence over environment variables. Repository and linked skills can locate the checkout from the skill's resolved location. A global copy needs an explicit repository path for deployment, startup, or the repository client. Health and screenshot HTTP requests do not need source files. These variables apply to this terminal and its child processes; provide the path and URL in the chat if an existing GUI has not inherited them.
+
+If `~/.codex/skills/iphone`, `~/.agents/skills/iphone`, or another same-name entry exists, choose the intended entry manually. Same-name skills are not merged, and repository scope should not be assumed to override user scope. Both may be discovered; identify the intended path when invoking one.
+
+Version the skill with backend code and update affected skill content alongside API changes. Commit public skill resources; keep `backend/.deployment.json`, virtual environments, runtime screenshots, and logs ignored. Never embed management tokens in the skill. Normal operation reuses the backend HTTP API without opening another serial connection.
+
 ## Build firmware from a fresh clone
 
 Requirements: 64-bit Windows, PowerShell 5.1 or later, Git, an internet connection, and several GB of free disk space. Arduino IDE and a global Arduino CLI installation are not required. Python is only needed for the PC client below.
@@ -74,6 +106,7 @@ Confirm the target on the phone before sending keyboard or mouse input, followin
 | --- | --- |
 | firmware/serial_ble_hid/ | Arduino firmware and HID report descriptors |
 | backend/ | Unified API, ESP32/AirPlay modules, package, tests and docs |
+| .agents/skills/iphone/ | Versioned iPhone skill for repository use or a manual user-scoped link |
 | scripts/ | Firmware build and upload scripts |
 | tests/ | Client unit tests, hardware serial checks, and diagnostic tools |
 | tests/case1_wechat_send_hello/ | Self-contained hardware test case with tooling, doc/, and ignored runs/ artifacts |
