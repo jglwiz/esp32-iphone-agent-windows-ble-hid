@@ -27,6 +27,7 @@
 
 - 常驻串口服务：[PC 服务设计与使用](backend/doc/service.md)。维护 FastAPI、组合动作与截图返回时读取。
 - 服务生命周期：[管理进程与 restart API](backend/doc/service-management.md)。启动、停止接单、释放串口及版本交接时读取。
+- 原地点击与按钮报告：[0.4.1 按钮设计及验收](firmware/serial_ble_hid/doc/mouse-buttons.md)。维护 `click()`、HID 报告、按钮释放或升级配对时读取；当前位置点击通过不代表坐标定位稳定。
 - 正向定位与实机边界：[连续指针响应验收](backend/doc/pointer-response-validation.md)；姿态相关踩坑：[方向异常调查](backend/doc/direction-root-cause.md)。区分当前局部验收、历史失败与未确认原因。
 - 微信完整实机用例：[测试流程与主代理验收](tests/case1_wechat_send_hello/doc/test-case.md)。运行子代理操作测试、比较耗时时读取。
 - 项目概览：[英文 README](README.md) / [中文 README](README_CN.md)（更新时保持内容一致）；使用、构建与恢复：[使用说明](doc/user/usage.md)。
