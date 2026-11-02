@@ -2,9 +2,11 @@
 
 ## 安装与启动
 
+全新电脑请先按 [首次部署流程](../../doc/user/deployment.md) 使用 `scripts/setup.ps1` 创建环境与配置，再通过 `deploy.py start` 启动。下面的 prepare/handover 是历史迁移流程，不是首次安装要求。`bootstrap.py check` 提供不发送输入的部署验收。
+
 使用 Python 3.11 或更高版本安装 backend/ 中的包。当前本机环境为 backend/.venv，使用已安装的系统依赖；可编辑包已安装，正式部署入口统一为 `python -m iphone_backend`。
 
-启动前设置绝对 IPHONE_PROJECT_ROOT、IPHONE_RUNTIME_DIR、UXPLAY_DIR、HIDAGENT_DATA，沿用 BLE_HID_DEVICE_ID、BLE_HID_PHONE_ID、BLE_HID_CALIBRATION_HOST；BLE_HID_RESTART_TOKEN 至少 32 字符。不要把 token 写入命令记录或提交 Git。8892/8891/8894 的运行服务必须属于同一已识别部署，不能平行启动第二份。
+启动前设置绝对 IPHONE_PROJECT_ROOT、IPHONE_RUNTIME_DIR、UXPLAY_DIR、HIDAGENT_DATA；迁移时沿用 BLE_HID_DEVICE_ID、BLE_HID_PHONE_ID、BLE_HID_CALIBRATION_HOST，新部署仅在启用相应坐标校准功能时配置这些值。BLE_HID_RESTART_TOKEN 至少 32 字符。不要把 token 写入命令记录或提交 Git。8892/8891/8894 的运行服务必须属于同一已识别部署，不能平行启动第二份。
 
 本机 tools/deploy.py prepare 从已核实的旧进程提取配置到忽略 Git 的 .deployment.json；handover 仅用于一次旧 API 到新版的受控交接；start 从本地配置启动统一主控。不要在未知状态下反复执行 start。使用前核对 implementation-status.md 中的部署状态。
 

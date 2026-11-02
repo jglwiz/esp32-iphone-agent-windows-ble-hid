@@ -18,6 +18,8 @@
 
 ## 从干净克隆构建固件
 
+需要完整部署控制 API 与 AirPlay 截图时，先阅读 [从干净克隆部署（供 AI Agent）](doc/user/deployment.md)。其中包含后端安装脚本、首次配置、手机操作和只读验收；可直接交给 AI 按步骤执行。
+
 前提：64 位 Windows、PowerShell 5.1 或更新版本、Git、网络连接及数 GB 可用磁盘空间。无需安装 Arduino IDE 或全局 Arduino CLI。Python 仅供下文的 PC 客户端使用。
 
 ```powershell

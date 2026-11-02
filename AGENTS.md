@@ -21,6 +21,8 @@
 
 ## 本子项目导航
 
+全新电脑或干净克隆的部署入口：[AI 部署流程](doc/user/deployment.md)。先使用 `scripts/setup.ps1` 安装和初始化，再启动并只读验收；`deploy.py prepare/handover` 仅用于旧服务迁移。
+
 当前统一后端位于 backend/：[使用说明](backend/doc/usage.md)、[架构](backend/doc/architecture.md)、[迁移实施记录](backend/doc/implementation-status.md)。唯一启动入口为 python -m iphone_backend；8892 提供控制和截图。旧 pc/ 源码已按清单迁移，下面的历史文档以当前说明为准。
 
 本目录是独立的串口 → ESP32-S3 → BLE HID 项目，以此目录为文档根。

@@ -186,4 +186,10 @@ if __name__=='__main__':
     elif args.operation=='recover-manager':recover_manager()
     elif args.operation=='adopt-manager':adopt_manager()
     elif args.operation=='restart-manager':restart_manager()
-    else:print(json.dumps({'manager_pid':launch().pid}))
+    else:
+        # Fresh start only. Existing deployments use their explicit recovery paths.
+        for port in (8891, 8892, 8894):
+            with socket.socket() as probe:
+                if probe.connect_ex(('127.0.0.1', port)) == 0:
+                    raise SystemExit(f'Port {port} already in use; inspect existing deployment before starting')
+        print(json.dumps({'manager_pid':launch().pid}))
