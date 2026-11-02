@@ -1,11 +1,14 @@
-__pycache__/
-*.pyc
-*.egg-info/
+# Backend test/install scratch directories
 .tmp/
+.test-tmp/
 .test-install/
-.venv/
-.runtime/
+
+# Local deployment credentials
 .deployment.json
+
+# Package build output
 build/
 dist/
+
+# Private on-device image fixtures
 tests/fixtures/camera-overlap/

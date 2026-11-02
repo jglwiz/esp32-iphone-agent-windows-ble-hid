@@ -6,6 +6,21 @@ firmware/**/build/
 .backups/
 __pycache__/
 *.pyc
+*.pyo
+
+# Python tooling caches and disposable test environments
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+.nox/
+*.egg-info/
+
+# Generated coverage reports
+htmlcov/
+.coverage
+.coverage.*
 
 # Local Python environment used by the quick start
 .venv/
