@@ -12,11 +12,19 @@ Project slug: `esp32-iphone-agent-windows-ble-hid`. The current implementation p
 
 For a fresh Windows deployment of the control API and AirPlay capture, follow the [AI-assisted deployment guide](doc/user/deployment.md) (Chinese). It includes backend setup, first-run configuration, phone steps, and read-only acceptance checks.
 
-Firmware **0.4.1** adds a separate button-only report and the Backend `click()` helper, without sending coordinates. Its device name is `S3-Click-Buttons`. Current-device click events passed; motion still has an orientation anomaly, so coordinate APIs are not claimed stable. See [Backend usage](backend/doc/usage.md#原地点击) and [button design](firmware/serial_ble_hid/doc/mouse-buttons.md) (Chinese). Earlier validation below remains historical.
+Firmware **0.4.1** adds a separate button-only report and the Backend `click()` helper, without sending coordinates. Its device name is `S3-Click-Buttons`. Current-device click events passed; movement depends on phone orientation. Follow the placement guidance below. Automatic orientation compensation is not implemented, and coordinate APIs are not claimed stable across arbitrary orientations. See [Backend usage](backend/doc/usage.md#原地点击) and [button design](firmware/serial_ble_hid/doc/mouse-buttons.md) (Chinese). Earlier validation below remains historical.
 
 Firmware 0.2.0 has been tested on a Waveshare ESP32-S3 and an iPhone 17e with keyboard input, Backspace, mouse movement, clicks, dragging, and vertical scrolling in both directions. Full automatic reconnection, lock-screen recovery, long-term stability, and coordinate calibration remain unverified or incomplete. Text output depends on the iPhone's hardware keyboard input method: a Chinese input method converted ASCII underscores into long dashes during testing. See the [validation record](doc/dev/validation.md) (Chinese) for evidence and limitations.
 
 The primary tested environment is Windows with a CH343 serial interface and a board with 16 MB Flash / 8 MB PSRAM. Other ESP32 variants, operating systems, and iOS versions have not been comprehensively tested.
+
+## Usage note: phone orientation
+
+Keep the iPhone upright in portrait, with the earpiece/front-camera end at the top and a stable tilt, and enable Portrait Orientation Lock in Control Center. Avoid upside-down or flat placement, and keep its orientation unchanged during operation. Inverted or rotated placement may cause direction mismatches, such as a rightward command moving the pointer downward. A portrait AirPlay image does not establish the phone's physical orientation.
+
+On 2026-11-03, after the user locked orientation, a movement-only retest showed correct alignment at three asymmetric target points and correct directions on both relative axes. This supports requiring orientation lock for current use; controlled lock-on/off comparisons and long-term testing remain incomplete. See the [retest record](backend/doc/direction-root-cause.md#2026-11-03方向锁定后复测) (Chinese).
+
+For now, the user must maintain the correct placement; the backend does not automatically detect or compensate for orientation. After changing placement, make small movements without clicking in a safe blank area, and use fresh screenshots to confirm direction and actual position before clicking. Stop positioning if the response is wrong. The in-place `click()` only clicks at the actual pointer position; it does not correct previous movement or placement. Upright placement does not replace this check. See the historical [direction investigation](backend/doc/direction-root-cause.md) (Chinese).
 
 ## Build firmware from a fresh clone
 
