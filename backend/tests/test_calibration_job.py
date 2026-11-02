@@ -12,6 +12,7 @@ class FakeReceiver:
 class FakeBridge:
  def request(self,op,**kw):return {'state':'ok'}
 class FakeWorker:
+ descriptor_version=1
  def __init__(self,folder):
   self.runtime=folder;self.device_id='dev';self.phone_id='phone';self.lock=threading.Lock();self.calibration_reserved=None;self.profile=None;self.profile_generation=0;self.geometry_last=None;self.fault=None;self.bridge=FakeBridge();self.job=None;self.calls=[];self.offset=(0,0);self.frame_seq=0
  def set_fault(self,reason):self.fault=reason
@@ -20,7 +21,7 @@ class FakeWorker:
   if c.is_set() or time.perf_counter()>d:raise RuntimeError('cancelled')
  def send(self,c,d,op,**kw):
   self.check(c,d);self.calls.append(op)
-  if op=='status':return {'device_id':'dev','supports_absolute_pointer':True,'absolute_descriptor_version':1,'absolute_ready':True,'boot_id':'b','connection_generation':1}
+  if op=='status':return {'device_id':'dev','supports_absolute_pointer':True,'absolute_descriptor_version':self.descriptor_version,'absolute_ready':True,'boot_id':'b','connection_generation':1}
   if op=='abs.click':
    x=kw['x']/32767*495+self.offset[0];y=kw['y']/32767*1079+self.offset[1]
    # markers at 40,225 and 455,880
@@ -39,6 +40,14 @@ class FakeWorker:
   return {'state':'available'},{'snapshot_version':1,'atomic_snapshot':True,'frame_id':'fake:'+str(self.frame_seq),'frame_time':time.time()+1,'jpeg_base64':data}
 
 class CalibrationJobTests(unittest.TestCase):
+ @patch.dict('os.environ',{'BLE_HID_CALIBRATION_HOST':'192.0.2.1'})
+ @patch('iphone_backend.calibration_jobs.Receiver',FakeReceiver)
+ def test_version3_calibration_publishes_matching_descriptor(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   w=FakeWorker(Path(tmp));w.descriptor_version=3
+   j=CalibrationJob('v2','calibrate',w);w.job=j;j.run()
+   self.assertEqual(j.result['state'],'passed',j.result.get('error'))
+   self.assertEqual(w.profile['descriptor_version'],3)
  @patch.dict('os.environ',{'BLE_HID_CALIBRATION_HOST':'192.0.2.1'})
  @patch('iphone_backend.calibration_jobs.Receiver',FakeReceiver)
  def test_complete_and_release_before_publish(self):

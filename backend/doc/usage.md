@@ -26,6 +26,22 @@
 
 认证使用 `Authorization: Bearer <token>`，管理入口只接受回环来源。错误截图或超时不会重新点击。/frame 可在动作期间读取，但确认动作效果必须使用满足动作完成时间的新帧。
 
+## 原地点击
+
+固件 0.4.1 的设备名为 `S3-Click-Buttons`。手机需开启辅助触控，并为主按钮保留单点操作；设备页“自定义按钮需要启用辅助触控”是通用说明，不能据此判断主开关状态。固件以独立 Report 5 发送按钮，不带 X/Y，`click` 不会重新定位到上一次坐标。
+
+确认可见指针位于目标后，通过现有 `POST /action` 提交 `steps: [{"op":"click","button":1}]`，或在项目根目录调用客户端：
+
+```python
+from iphone_backend.service_client import click
+
+result = click('.runtime/click.jpg')
+```
+
+`click()` 不需要坐标或校准 profile，也不执行定位验证，调用方应先确认当前位置。`click_at(x,y)` 是有定位门禁的另一种操作，不能用未知位置原地点击替代。reports_sent/released 仅证明本地提交与释放，仍需新鲜画面或可信事件；未知结果先检查保存的 request_id，不自动再次点击。
+
+本轮仅验收主按钮。移动仍观察到方向旋转，不能据原地点击通过宣称坐标 API 稳定；正向校验保持，异常不放行。设计与证据边界见 [按钮报告说明](../../firmware/serial_ble_hid/doc/mouse-buttons.md)。
+
 ## 故障与恢复
 
 设备重置会使当前定位校准运行态失效；恢复 BLE 后仍需按原有规则验证定位。reset 不刷固件、不清配对，结果未知时先查询状态，不能自动重发。

@@ -44,6 +44,17 @@ def click_at(x, y, output, **kwargs):
     return act([{'op':'click_at','x':x,'y':y}], output, **kwargs)
 
 
+def click(output, *, button=1, **kwargs):
+    """Press and release at the current iOS pointer; never reposition it.
+
+    Submits one mouse.click command; firmware owns its button report routing.
+    AssistiveTouch and its device button mapping must be enabled on iPhone.
+    Report submission alone does not verify the on-screen effect. Preserve the
+    request ID and inspect uncertain outcomes rather than replaying a click.
+    """
+    return act([{'op':'click','button':button}], output, **kwargs)
+
+
 def _json_request(path, *, base_url='http://127.0.0.1:8892', payload=None):
     request = urllib.request.Request(base_url.rstrip('/') + path,
         data=None if payload is None else json.dumps(payload).encode(),

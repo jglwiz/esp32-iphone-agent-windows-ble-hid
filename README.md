@@ -10,6 +10,8 @@ Project slug: `esp32-iphone-agent-windows-ble-hid`. The current implementation p
 
 ## Status
 
+Firmware **0.4.1** adds a separate button-only report and the Backend `click()` helper, without sending coordinates. Its device name is `S3-Click-Buttons`. Current-device click events passed; motion still has an orientation anomaly, so coordinate APIs are not claimed stable. See [Backend usage](backend/doc/usage.md#原地点击) and [button design](firmware/serial_ble_hid/doc/mouse-buttons.md) (Chinese). Earlier validation below remains historical.
+
 Firmware 0.2.0 has been tested on a Waveshare ESP32-S3 and an iPhone 17e with keyboard input, Backspace, mouse movement, clicks, dragging, and vertical scrolling in both directions. Full automatic reconnection, lock-screen recovery, long-term stability, and coordinate calibration remain unverified or incomplete. Text output depends on the iPhone's hardware keyboard input method: a Chinese input method converted ASCII underscores into long dashes during testing. See the [validation record](doc/dev/validation.md) (Chinese) for evidence and limitations.
 
 The primary tested environment is Windows with a CH343 serial interface and a board with 16 MB Flash / 8 MB PSRAM. Other ESP32 variants, operating systems, and iOS versions have not been comprehensively tested.
@@ -38,7 +40,7 @@ Replace `COM4` with your board's port; install its serial driver if Windows does
 
 ## Quick start: PC client
 
-Prerequisites: the board is already running this project's firmware, the iPhone is paired with `S3-iPhone-HID`, and AssistiveTouch is enabled. See the [usage guide](doc/user/usage.md) (Chinese) for firmware build prerequisites.
+Prerequisites: the board is already running this project's firmware, the iPhone is paired with `S3-Click-Buttons`, and AssistiveTouch is enabled. See the [usage guide](doc/user/usage.md) (Chinese) for firmware build prerequisites.
 
 Run from the project root using Python 3.11 or later; development has used a Python 3.11 environment:
 

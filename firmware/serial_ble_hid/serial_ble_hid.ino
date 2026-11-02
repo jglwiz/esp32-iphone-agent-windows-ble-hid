@@ -10,12 +10,14 @@
 #include "services/gatt/ble_svc_gatt.h"
 
 
-static const char *VERSION = "0.3.3";
-static const char *NAME = "S3-iPhone-HID";
+static const char *VERSION = "0.4.1";
+static const char *NAME = "S3-Click-Buttons";
 static const uint32_t LEASE_MS = 2000, REPORT_MS = 20;
 NimBLEServer *server;
 NimBLEHIDDevice *hid;
-NimBLECharacteristic *keyInput, *mouseInput, *absInput;
+NimBLECharacteristic *keyInput, *mouseInput, *absInput, *buttonInput;
+std::atomic<bool> buttonSubscribed{false};
+String lastButtonHex;
 std::atomic<bool> absSubscribed{false};
 uint16_t absX = 16384, absY = 16384;
 uint8_t absButtons = 0;
@@ -77,7 +79,7 @@ void reply(int id, const char *state, const char *error = nullptr, const String 
   Serial0.println(out);
 }
 bool ready(bool keyboard) {
-  return connected && encrypted && !suspended && (keyboard ? keySubscribed.load() : mouseSubscribed.load());
+  return connected && encrypted && !suspended && (keyboard ? keySubscribed.load() : (mouseSubscribed.load() && buttonSubscribed.load()));
 }
 String hexBytes(const uint8_t *data, size_t size) {
   String out;
@@ -96,32 +98,47 @@ bool sendReport(bool keyboard, uint8_t *data, size_t size) {
 }
 bool sendKeys() { return sendReport(true, keys, sizeof(keys)); }
 bool sendMouse(int dx = 0, int dy = 0, int wheel = 0) {
-  uint8_t data[] = {buttons,(uint8_t)(int8_t)dx,(uint8_t)(int8_t)dy,(uint8_t)(int8_t)wheel};
+  uint8_t data[] = {0,(uint8_t)(int8_t)dx,(uint8_t)(int8_t)dy,(uint8_t)(int8_t)wheel};
   return sendReport(false,data,sizeof(data));
 }
 bool absReady() {
-  return connected && encrypted && !suspended && absSubscribed;
+  return connected && encrypted && !suspended && absSubscribed && buttonSubscribed;
+}
+bool sendButtons() {
+  if (!connected || !encrypted || suspended || !buttonSubscribed) return false;
+  uint8_t data[] = {buttons};
+  buttonInput->setValue(data, sizeof(data));
+  auto stored = buttonInput->getValue();
+  if (stored.length() != sizeof(data) || memcmp(stored.c_str(),data,sizeof(data))) return false;
+  lastButtonHex = hexBytes(data, sizeof(data));
+  return buttonInput->notify();
 }
 bool sendAbsolute(uint16_t x, uint16_t y, uint8_t held) {
   if (!absReady()) return false;
-  uint8_t data[] = {held, (uint8_t)x, (uint8_t)(x >> 8), (uint8_t)y, (uint8_t)(y >> 8)};
+  uint8_t data[] = {0, (uint8_t)x, (uint8_t)(x >> 8), (uint8_t)y, (uint8_t)(y >> 8)};
   absInput->setValue(data, sizeof(data));
   // These are last commanded coordinates, never a position read back from iOS.
   absX = x; absY = y;
-  // A failed press may still have reached the peer: retain release obligation.
-  if (held) absButtons = held;
   lastAbsHex = hexBytes(data, sizeof(data));
   bool ok = absInput->notify();
-  if (ok) { absReports++; absButtons = held; }
+  if (ok) {
+    absReports++;
+    if (held != absButtons) {
+      // A failed press may have reached the peer: retain release obligation.
+      if (held) absButtons = held;
+      buttons = held;
+      ok = sendButtons();
+      if (ok) absButtons = held;
+    }
+  }
   return ok;
 }
 bool releaseAll() {
-  // A session opening/closing must not inject an absolute move.
-  // Only an outstanding absolute button press requires an absolute release.
-  bool absOk = !absButtons || sendAbsolute(absX, absY, 0);
+  // Release is button-only, even after native input. Never send cached X/Y.
   memset(keys,0,sizeof(keys)); buttons = 0;
-  keyNeutral = sendKeys(); mouseNeutral = sendMouse();
-  return absOk && keyNeutral && mouseNeutral;
+  keyNeutral = sendKeys(); mouseNeutral = sendButtons();
+  if (mouseNeutral) absButtons = 0;
+  return keyNeutral && mouseNeutral;
 }
 bool abortAction(const char *reason) {
   if (action.active) {
@@ -137,7 +154,12 @@ void status(int id) {
   cJSON_AddStringToObject(j,"device_id",stableDeviceId.c_str());
   cJSON_AddNumberToObject(j,"connection_generation",connectionGeneration.load());
   cJSON_AddBoolToObject(j,"supports_absolute_pointer",true);
-  cJSON_AddNumberToObject(j,"absolute_descriptor_version",1);
+  cJSON_AddNumberToObject(j,"absolute_descriptor_version",3);
+  cJSON_AddNumberToObject(j,"click_report_id",5);
+  cJSON_AddBoolToObject(j,"click_repositions_pointer",false);
+  cJSON_AddBoolToObject(j,"button_subscribed",buttonSubscribed);
+  cJSON_AddNumberToObject(j,"button_handle",buttonInput->getHandle());
+  cJSON_AddStringToObject(j,"last_button_hex",lastButtonHex.c_str());
   cJSON_AddBoolToObject(j,"absolute_subscribed",absSubscribed);
   cJSON_AddBoolToObject(j,"absolute_ready",absReady() && !absButtons);
   cJSON_AddNumberToObject(j,"absolute_handle",absInput->getHandle());
@@ -177,8 +199,10 @@ void diagnostics(int id) {
   cJSON_AddStringToObject(j,"absolute_reference_hex",hexBytes(ad->getValue().data(),ad->getValue().size()).c_str());
   auto *kd = keyInput->getDescriptorByUUID(NimBLEUUID((uint16_t)0x2908));
   auto *md = mouseInput->getDescriptorByUUID(NimBLEUUID((uint16_t)0x2908));
+  auto *bd = buttonInput->getDescriptorByUUID(NimBLEUUID((uint16_t)0x2908));
   cJSON_AddStringToObject(j,"keyboard_reference_hex",hexBytes(kd->getValue().data(),kd->getValue().size()).c_str());
   cJSON_AddStringToObject(j,"mouse_reference_hex",hexBytes(md->getValue().data(),md->getValue().size()).c_str());
+  cJSON_AddStringToObject(j,"button_reference_hex",hexBytes(bd->getValue().data(),bd->getValue().size()).c_str());
   Serial0.println(encode(j));
 }
 
@@ -191,7 +215,7 @@ class ServerCallbacks : public NimBLEServerCallbacks {
   }
   void onDisconnect(NimBLEServer *, NimBLEConnInfo &, int reason) override {
     connected = false; encrypted = false; bonded = false; suspended = false;
-    keySubscribed = false; mouseSubscribed = false; absSubscribed = false; disconnected = true;
+    keySubscribed = false; mouseSubscribed = false; absSubscribed = false; buttonSubscribed = false; disconnected = true;
     authReason = reason;
   }
   void onAuthenticationComplete(NimBLEConnInfo &info) override {
@@ -207,6 +231,7 @@ class ReportCallbacks : public NimBLECharacteristicCallbacks {
     if (ch == absInput) absSubscribed = (value & 1) != 0;
     if (ch == keyInput) keySubscribed = (value & 1) != 0;
     if (ch == mouseInput) mouseSubscribed = (value & 1) != 0;
+    if (ch == buttonInput) buttonSubscribed = (value & 1) != 0;
   }
 };
 class LedCallbacks : public NimBLECharacteristicCallbacks {
@@ -318,11 +343,11 @@ void advanceAction() {
   } else if (action.op == "mouse.click") {
     if (!action.phase) { buttons |= action.button; done = false; }
     else buttons &= ~action.button;
-    ok = sendMouse();
+    ok = sendButtons();
   } else if (action.op == "mouse.down" || action.op == "mouse.up") {
     if (action.op == "mouse.down") buttons |= action.button;
     else buttons &= ~action.button;
-    ok = sendMouse();
+    ok = sendButtons();
   } else {
     memset(keys,0,sizeof(keys));
     if (action.op != "keyboard.up" && action.modifiers && action.usage) {
@@ -352,6 +377,12 @@ void setup() {
   uint8_t baseMac[6]; esp_read_mac(baseMac, ESP_MAC_BT);
   stableDeviceId = hexBytes(baseMac, sizeof(baseMac));
   NimBLEDevice::init(NAME);
+  uint8_t probeMac[] = {baseMac[5],baseMac[4],baseMac[3],baseMac[2],baseMac[1],
+                       (uint8_t)((baseMac[0] ^ 0x21) | 0xC0)};
+  if (!NimBLEDevice::setOwnAddr(probeMac) ||
+      !NimBLEDevice::setOwnAddrType(BLE_OWN_ADDR_RANDOM)) {
+    while (true) delay(1000);
+  }
   NimBLEDevice::setSecurityIOCap(BLE_HS_IO_NO_INPUT_OUTPUT);
   NimBLEDevice::setSecurityAuth(true,false,true);
   server = NimBLEDevice::createServer();
@@ -359,13 +390,16 @@ void setup() {
   hid = new NimBLEHIDDevice(server);
   hid->setManufacturer("Serial BLE HID Project");
   // Prototype PnP ID, no borrowed commercial keyboard identity.
-  uint8_t pnp[] = {1,0xFF,0xFF,1,0,0,1};
+  uint8_t pnp[] = {1,0xFF,0xFF,1,0,3,0};
   hid->getPnp()->setValue(pnp,sizeof(pnp));
   hid->setHidInfo(0,1);
   hid->setReportMap((uint8_t *)REPORT_MAP,sizeof(REPORT_MAP));
   // Keep the first input characteristic consistent with keyboard-first Report Map.
   keyInput = hid->getInputReport(1); mouseInput = hid->getInputReport(2);
   absInput = hid->getInputReport(4);
+  buttonInput = hid->getInputReport(5);
+  buttonInput->setCallbacks(new ReportCallbacks());
+  uint8_t buttonZero = 0; buttonInput->setValue(&buttonZero, 1);
   absInput->setCallbacks(new ReportCallbacks());
   uint8_t absZero[5] = {}; absInput->setValue(absZero,5);
   keyInput->setCallbacks(new ReportCallbacks()); mouseInput->setCallbacks(new ReportCallbacks());
@@ -374,7 +408,7 @@ void setup() {
   hid->getHidControl()->setCallbacks(new ControlCallbacks());
   // Report protocol only: boot characteristics are intentionally absent.
   hid->startServices(); server->start(); hid->setBatteryLevel(100);
-  if (!absInput->getHandle() || absInput->getHandle() == keyInput->getHandle() || absInput->getHandle() == mouseInput->getHandle() || !keyInput->getHandle() || !mouseInput->getHandle() || keyInput->getHandle() == mouseInput->getHandle()) {
+  if (!buttonInput->getHandle() || buttonInput->getHandle() == absInput->getHandle() || buttonInput->getHandle() == keyInput->getHandle() || buttonInput->getHandle() == mouseInput->getHandle() || !absInput->getHandle() || absInput->getHandle() == keyInput->getHandle() || absInput->getHandle() == mouseInput->getHandle() || !keyInput->getHandle() || !mouseInput->getHandle() || keyInput->getHandle() == mouseInput->getHandle()) {
     emitEvent("fatal_missing_hid_characteristic");
     while (true) delay(1000);  // Never advertise an incomplete composite HID device.
   }
@@ -388,12 +422,12 @@ void loop() {
   if (disconnected.exchange(false)) {
     abortAction("disconnected_partial_unknown"); emitEvent("ble_disconnected");
   }
-  if (absButtons && !action.active && absReady()) sendAbsolute(absX, absY, 0);
+  if (absButtons && !action.active) { buttons = 0; if (sendButtons()) absButtons = 0; }
   bool kr = ready(true), mr = ready(false);
   if (!kr) keyNeutral = false;
   if (!mr) mouseNeutral = false;
   if (kr && !keyNeutral) { memset(keys,0,sizeof(keys)); keyNeutral = sendKeys(); }
-  if (mr && !mouseNeutral) { buttons = 0; mouseNeutral = sendMouse(); }
+  if (mr && !mouseNeutral) { buttons = 0; mouseNeutral = sendButtons(); }
   if (kr != lastKeyReady || mr != lastMouseReady) {
     lastKeyReady = kr; lastMouseReady = mr; emitEvent("hid_state_changed");
   }

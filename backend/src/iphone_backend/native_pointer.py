@@ -3,9 +3,12 @@ from __future__ import annotations
 import math
 
 WIDTH, HEIGHT = 496, 1080
+SUPPORTED_DESCRIPTOR_VERSIONS = (1, 3)  # v2 experiment failed iPhone motion validation
 
 
 def validate_profile(profile, *, device_id, phone_id, descriptor_version, geometry, require_verified=True):
+    if type(descriptor_version) is not int or descriptor_version not in SUPPORTED_DESCRIPTOR_VERSIONS:
+        raise ValueError('Unsupported pointer descriptor')
     if not isinstance(profile, dict) or profile.get('schema_version') != 1:
         raise ValueError('Invalid profile schema')
     if not device_id or not phone_id or profile.get('device_id') != device_id or profile.get('phone_id') != phone_id:

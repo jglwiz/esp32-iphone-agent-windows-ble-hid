@@ -23,7 +23,7 @@ from iphone_backend.esp32.serial_transport import Bridge, ascii_key
 from iphone_backend.esp32.service import SerialService
 from iphone_backend.airplay.frames import FrameCapture
 from iphone_backend.absolute_pointer import run as run_absolute
-from iphone_backend.native_pointer import map_target, validate_profile
+from iphone_backend.native_pointer import map_target, validate_profile, SUPPORTED_DESCRIPTOR_VERSIONS
 from iphone_backend.pointer_guard import guard as verify_pointer_response
 from iphone_backend.calibration import load_unverified
 from iphone_backend.calibration_jobs import CalibrationJob
@@ -365,7 +365,7 @@ class SerialWorker:
                     raise RuntimeError('Device disconnected')
                 if not self.device_id or state.get('device_id') != self.device_id:
                     raise RuntimeError('Device identity unavailable or mismatch')
-                if state.get('supports_absolute_pointer') is not True or state.get('absolute_descriptor_version') != 1 or state.get('absolute_ready') is not True:
+                if state.get('supports_absolute_pointer') is not True or state.get('absolute_descriptor_version') not in SUPPORTED_DESCRIPTOR_VERSIONS or state.get('absolute_ready') is not True:
                     raise RuntimeError('Native absolute capability unavailable or not ready')
                 result['connection_binding'] = {k: state.get(k) for k in ('device_id','boot_id','connection_generation','absolute_descriptor_version')}
                 result['profile_generation'] = self.profile_generation

@@ -19,13 +19,15 @@ description: 在本机 Windows 通过统一 Backend、ESP32 BLE HID 与 AirPlay 
 
 1. 查询健康、设备状态和画面状态，检查 active_id/queue_size，避免与其他任务同时输入。
 2. 服务存在则复用。缺失时检查端口占用和主控，不结束未知进程。确认整个主控缺失后，用上述 Python 执行 `backend/tools/deploy.py start`；工具隐藏启动，失败后读日志，不循环拉起。
-3. 设备 fault 时检查 PC 串口、BLE readiness 和绑定设备；不能另开串口脚本抢占常驻服务。手机需解锁、开启辅助触控、连接 S3-iPhone-HID。
+3. 设备 fault 时检查 PC 串口、BLE readiness 和绑定设备；不能另开串口脚本抢占常驻服务。手机需解锁、开启辅助触控、连接状态返回的当前设备名（0.4.1 为 S3-Click-Buttons；旧版为 S3-iPhone-HID）。
 4. 画面缺失时保留 UxPlay 和取帧进程，检查 `/screen/status`，必要时请用户重新连接屏幕镜像 `iPhone-Agent`。不要因无图而重启接收器。`/screen/start` 可认证启动缺失的取帧进程，现存正确实例会复用。
 5. GET `/frame` 保存到项目 `.runtime` 的新文件并用图像工具查看。204 是无帧；503 是依赖不可用。200 可能是旧快照，必须读取 X-Frame-Time/Id；超过 5 秒只能说明静止或未知，不能当成操作后的新证据。
 
 ## 操作和证据
 
-使用 `iphone_backend.service_client.act`、`move_to`、`click_at`，请求发往 POST `/action`；客户端先保存 request_id，再保存结果和截图。参考包中的 Action/Step 定义，不使用已退役的 `/api/tap` 等 USB 接口。绝对坐标是当前 496×1080 截图的整数像素，不能传 0–1 归一化坐标。
+使用 `iphone_backend.service_client.act`、`move_to`、`click_at`、`click`，请求发往 POST `/action`；客户端先保存 request_id，再保存结果和截图。参考包中的 Action/Step 定义，不使用已退役的 `/api/tap` 等 USB 接口。绝对坐标是当前 496×1080 截图的整数像素，不能传 0–1 归一化坐标。
+
+0.4.1 的 `click(output)` 是当前指针处主按钮按下/松开，使用不含 X/Y 的独立报告；动作步骤为 `{"op":"click","button":1}`。先看图确认真实指针位于目标，不能把 move_to 请求坐标当作到位证据。当前仍有移动方向旋转记录，不能因原地点击成功宣称坐标定位已恢复，也不反向拟合或修改 profile 掩盖异常。
 
 默认视觉相对模式仍受校准和定位检查约束。原生模式仅在已验证校准范围内使用。人工原生诊断流程需 `coordinate_backend='native_hid', diagnostic_uncalibrated=True, manual_visual=True`：先单步 move_to，实际查看返回截图、确认指针位置，再用该 action_id 作为 reviewed_action_id 对同位置 click_at。缺少新帧、审查或定位证据时不绕过校验；审查过期后只能重新验证未执行的动作。
 

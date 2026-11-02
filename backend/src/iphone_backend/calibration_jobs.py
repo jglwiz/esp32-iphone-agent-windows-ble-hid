@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 from iphone_backend.calibration import EventGate, fit_samples, validate_holdout, atomic_save
 from iphone_backend.calibration_receiver import Receiver
-from iphone_backend.native_pointer import map_target, validate_profile
+from iphone_backend.native_pointer import map_target, validate_profile, SUPPORTED_DESCRIPTOR_VERSIONS
 
 class CalibrationJob:
  def __init__(self, request_id, mode, owner, timeout=180):
@@ -97,8 +97,9 @@ class CalibrationJob:
    if not w.device_id or not w.phone_id:raise ValueError('Explicit device and phone identities required')
    status=w.send(self.cancel,self.deadline,'status')
    w.record_status(status)
-   if status.get('device_id')!=w.device_id or status.get('supports_absolute_pointer') is not True or status.get('absolute_descriptor_version')!=1 or status.get('absolute_ready') is not True:raise ValueError('Native device capability unavailable')
-   connection=(status.get('boot_id'),status.get('connection_generation'))
+   if status.get('device_id')!=w.device_id or status.get('supports_absolute_pointer') is not True or status.get('absolute_descriptor_version') not in SUPPORTED_DESCRIPTOR_VERSIONS or status.get('absolute_ready') is not True:raise ValueError('Native device capability unavailable')
+   descriptor_version=status['absolute_descriptor_version']
+   connection=(status.get('boot_id'),status.get('connection_generation'),descriptor_version)
    marks,frame,path=self.geometry();self.result.update(markers=marks,initial_frame=frame,initial_image=path)
    l,t,r,b=marks; vw,vh=self.gate.viewport
    if vw<=52 or vh<=82:raise ValueError('Invalid viewport')
@@ -108,7 +109,7 @@ class CalibrationJob:
     if not (l+25<command[0]<r-25 and t+35<command[1]<b-25):raise ValueError('Command outside safe area')
     now=w.send(self.cancel,self.deadline,'status')
     w.record_status(now)
-    if (now.get('boot_id'),now.get('connection_generation'))!=connection or not now.get('absolute_ready'):raise ValueError('Connection changed')
+    if (now.get('boot_id'),now.get('connection_generation'),now.get('absolute_descriptor_version'))!=connection or not now.get('absolute_ready'):raise ValueError('Connection changed')
     before,_,_=self.geometry()
     if np.max(np.abs(np.array(before)-marks))>2 or self.gate.invalid:raise ValueError('Page changed before click')
     if time.monotonic()-self.gate.last_poll>2:raise ValueError('Page session is not active')
@@ -137,7 +138,7 @@ class CalibrationJob:
    if self.mode=='verify':
     existing=w.profile
     if existing is None:raise ValueError('Existing profile required for verification')
-    validate_profile(existing,device_id=w.device_id,phone_id=w.phone_id,descriptor_version=1,geometry=(496,1080,'portrait'),require_verified=False)
+    validate_profile(existing,device_id=w.device_id,phone_id=w.phone_id,descriptor_version=descriptor_version,geometry=(496,1080,'portrait'),require_verified=False)
     axes=existing['axes'];mode=existing['mapping'];measured=None
    else:
     train=[]
@@ -159,12 +160,12 @@ class CalibrationJob:
    if self.mode=='verify':
     old=w.profile['verified_region'];x0=max(x0,old[0]);y0=max(y0,old[1]);x1=min(x1,old[2]);y1=min(y1,old[3])
     if x0>=x1 or y0>=y1:raise ValueError('No verified region remains')
-   profile={'schema_version':1,'profile_id':uuid.uuid4().hex,'device_id':w.device_id,'phone_id':w.phone_id,'descriptor_version':1,'geometry':[496,1080,'portrait'],'coordinate_space':'full_screenshot_pixels','frame_source_id':self.frame_source,'frame_sequence':self.frame_sequence,'frame_timestamp':self.frame_timestamp,'frame_sha256':self.frame_sha256,'verification':'verified','verified_region':[x0,y0,x1,y1],'axes':axes,'mapping':mode,'evidence_directory':str(self.folder),'verified_at':time.time(),'max_holdout_error':max(max(abs(x['target'][i]-x['actual'][i]) for i in (0,1)) for x in validation)}
+   profile={'schema_version':1,'profile_id':uuid.uuid4().hex,'device_id':w.device_id,'phone_id':w.phone_id,'descriptor_version':descriptor_version,'geometry':[496,1080,'portrait'],'coordinate_space':'full_screenshot_pixels','frame_source_id':self.frame_source,'frame_sequence':self.frame_sequence,'frame_timestamp':self.frame_timestamp,'frame_sha256':self.frame_sha256,'verification':'verified','verified_region':[x0,y0,x1,y1],'axes':axes,'mapping':mode,'evidence_directory':str(self.folder),'verified_at':time.time(),'max_holdout_error':max(max(abs(x['target'][i]-x['actual'][i]) for i in (0,1)) for x in validation)}
    w.check(self.cancel,self.deadline)
    if self.gate.invalid:raise ValueError(self.gate.invalid)
    final=w.send(self.cancel,self.deadline,'status')
    w.record_status(final)
-   if (final.get('boot_id'),final.get('connection_generation'))!=connection or not final.get('absolute_ready'):raise ValueError('Connection changed before publication')
+   if (final.get('boot_id'),final.get('connection_generation'),final.get('absolute_descriptor_version'))!=connection or not final.get('absolute_ready'):raise ValueError('Connection changed before publication')
    w.send(self.cancel,self.deadline,'release_all')
    released=True
    w.check(self.cancel,self.deadline)

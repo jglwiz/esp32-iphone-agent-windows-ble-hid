@@ -7,9 +7,10 @@ from iphone_backend.service import Action, SerialWorker
 from test_service import FakeBridge, fake_frame
 
 class NativeBridge(FakeBridge):
+ descriptor_version=1
  def request(self,op,**kw):
   super().request(op,**kw)
-  return {'state':'ok','connected':True,'boot_id':'b','connection_generation':1,'device_id':'d','supports_absolute_pointer':True,'absolute_descriptor_version':1,'absolute_ready':True}
+  return {'state':'ok','connected':True,'boot_id':'b','connection_generation':1,'device_id':'d','supports_absolute_pointer':True,'absolute_descriptor_version':self.descriptor_version,'absolute_ready':True}
 
 class NativeServiceTests(unittest.TestCase):
  def setUp(self):
@@ -20,11 +21,33 @@ class NativeServiceTests(unittest.TestCase):
    return {"state":"passed","version":1}
   self.guard_patch=patch("iphone_backend.orchestration.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
   self.tmp=tempfile.TemporaryDirectory();self.bridge=NativeBridge();
+  frame_sequence=0
   async def read(client):
+   nonlocal frame_sequence
+   frame_sequence+=1
    from iphone_backend.airplay.frames import Frame
-   return Frame(cv2.imencode('.jpg',np.zeros((1080,496,3),dtype=np.uint8))[1].tobytes(),time.time(),'test:1')
+   return Frame(cv2.imencode('.jpg',np.zeros((1080,496,3),dtype=np.uint8))[1].tobytes(),time.time(),'test:'+str(frame_sequence))
   self.w=SerialWorker(bridge_factory=lambda **kw:self.bridge,frame_reader=read,runtime=Path(self.tmp.name));self.w.start();self.w.device_id='d';self.w.phone_id='phone';self.w.geometry=(496,1080,'portrait');self.w.profile={'schema_version':1,'profile_id':'p','device_id':'d','phone_id':'phone','descriptor_version':1,'geometry':[496,1080,'portrait'],'coordinate_space':'full_screenshot_pixels','verification':'verified','verified_region':[186,455,310,651],'axes':[{'slope':1.,'offset':0.},{'slope':1.,'offset':0.}],'frame_source_id':'test','frame_sequence':0,'frame_timestamp':0.,'frame_sha256':'0'*64}
  def tearDown(self):self.w.stop();self.tmp.cleanup()
+ def test_version3_requires_its_own_verified_profile(self):
+  self.bridge.descriptor_version=3
+  self.w.record_status(self.bridge.request('status'))
+  move=Action(request_id='v2-move',coordinate_backend='native_hid',diagnostic_uncalibrated=True,steps=[{'op':'move_to','x':248,'y':540}],capture=False)
+  self.assertEqual(self.w.submit(move)[0].result(3)['input_state'],'reports_sent')
+  old=Action(request_id='v2-old-profile',coordinate_backend='native_hid',steps=[{'op':'click_at','x':248,'y':540}],capture=False)
+  self.assertEqual(self.w.submit(old)[0].result(3)['input_state'],'not_started')
+  self.assertFalse(any(op=='abs.click' for op,_ in self.bridge.calls))
+  self.w.profile={**self.w.profile,'descriptor_version':3,'verification':'verified'}
+  fresh=Action(request_id='v2-fresh-profile',coordinate_backend='native_hid',steps=[{'op':'click_at','x':248,'y':540}],capture=False)
+  result=self.w.submit(fresh)[0].result(3)
+  self.assertEqual(result['input_state'],'reports_sent',result)
+  self.assertEqual(sum(op=='abs.click' for op,_ in self.bridge.calls),1)
+ def test_unknown_descriptor_cannot_use_diagnostic_input(self):
+  self.bridge.descriptor_version=99
+  self.w.record_status(self.bridge.request('status'))
+  move=Action(request_id='unknown-version',coordinate_backend='native_hid',diagnostic_uncalibrated=True,steps=[{'op':'move_to','x':248,'y':540}],capture=False)
+  self.assertEqual(self.w.submit(move)[0].result(3)['input_state'],'not_started')
+  self.assertFalse(any(op=='abs.move' for op,_ in self.bridge.calls))
  def test_single_move_and_dedup(self):
   a=Action(request_id='native',coordinate_backend='native_hid',diagnostic_uncalibrated=True,steps=[{'op':'move_to','x':100,'y':300}],capture=False)
   f,_=self.w.submit(a);r=f.result(3);self.assertEqual(r['absolute'][0]['status'],'report_submitted');self.assertIs(f,self.w.submit(a)[0]);self.assertEqual(sum(x[0]=='abs.move' for x in self.bridge.calls),1)

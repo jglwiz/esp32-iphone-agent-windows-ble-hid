@@ -10,6 +10,8 @@
 
 ## 当前状态
 
+固件 **0.4.1** 增加独立按钮报告，Backend 提供原地 `click()`，不发送坐标；设备名为 `S3-Click-Buttons`。当前实机点击事件通过，移动仍有方向旋转，不能宣称坐标 API 稳定。使用与边界见 [Backend 说明](backend/doc/usage.md#原地点击) 和 [按钮设计](firmware/serial_ble_hid/doc/mouse-buttons.md)。下面的旧版本验收保留为历史记录。
+
 固件 0.2.0 已在现有微雪 ESP32-S3 与 iPhone 17e 上验证键盘输入、退格、鼠标移动、点击、拖动和双向滚轮。完整自动重连、锁屏恢复、长期稳定性和坐标校准尚未完成。文本受手机硬件输入法影响，ASCII 下划线曾被中文输入法转换为长横线。完整证据与边界见 [验证记录](doc/dev/validation.md)。
 
 当前主要验证环境为 Windows、CH343 串口、16 MB Flash / 8 MB PSRAM 开发板。未验证所有 ESP32 型号、其他操作系统或全部 iOS 版本。
@@ -38,7 +40,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload 
 
 ## 快速开始：PC 客户端
 
-前提：开发板已刷入本项目固件；iPhone 已配对 `S3-iPhone-HID`，开启辅助触控。固件构建前提见 [使用说明](doc/user/usage.md)。
+前提：开发板已刷入本项目固件；iPhone 已配对 `S3-Click-Buttons`，开启辅助触控。固件构建前提见 [使用说明](doc/user/usage.md)。
 
 在项目根目录运行（Python 3.11 或更新版本；已使用 Python 3.11 环境测试）：
 
