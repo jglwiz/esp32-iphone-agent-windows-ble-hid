@@ -1,0 +1,4 @@
+{"manager_pid": 49808, "retained_api_pid": 55340, "retained_capture_pid": 53584}
+RELOAD_EXIT=0
+{"api_pid": 49092, "manager_pid": 49808, "capture_pid": 53584, "restart_verified": true}
+RESTART_EXIT=0

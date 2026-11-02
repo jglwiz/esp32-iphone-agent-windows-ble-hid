@@ -1,0 +1,164 @@
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_failed_absolute_prevents_later_click_and_releases (test_absolute_pointer.AbsoluteTests.test_failed_absolute_prevents_later_click_and_releases) ... ok
+test_service_absolute_is_single_owner_and_deduplicated (test_absolute_pointer.AbsoluteTests.test_service_absolute_is_single_owner_and_deduplicated) ... ok
+test_stalled_pointer_stops_before_click (test_absolute_pointer.AbsoluteTests.test_stalled_pointer_stops_before_click) ... ok
+test_validation_requires_coordinates_and_rejects_held_input (test_absolute_pointer.AbsoluteTests.test_validation_requires_coordinates_and_rejects_held_input) ... ok
+test_invalid_holdout (test_calibration.CalibrationInputTests.test_invalid_holdout) ... ok
+test_viewport_change_invalidates (test_calibration.CalibrationInputTests.test_viewport_change_invalidates) ... ok
+test_event_gate_rejects_wrong_session_and_replay (test_calibration.CalibrationTests.test_event_gate_rejects_wrong_session_and_replay) ... ok
+test_fit_and_holdout (test_calibration.CalibrationTests.test_fit_and_holdout) ... ok
+test_out_of_order_invalidates (test_calibration.CalibrationTests.test_out_of_order_invalidates) ... ok
+test_persistence_requires_reverification (test_calibration.CalibrationTests.test_persistence_requires_reverification) ... ok
+test_listener_uses_current_loop_and_token_gate (test_calibration_async.CalibrationHTTP.test_listener_uses_current_loop_and_token_gate) ... ok
+test_idempotence_cancel_and_exclusive (test_calibration_http.CalibrationHttpTests.test_idempotence_cancel_and_exclusive) ... ok
+test_bias_correction_on_holdout (test_calibration_job.CalibrationJobTests.test_bias_correction_on_holdout) ... ok
+test_cancel_prevents_later_clicks (test_calibration_job.CalibrationJobTests.test_cancel_prevents_later_clicks) ... ok
+test_complete_and_release_before_publish (test_calibration_job.CalibrationJobTests.test_complete_and_release_before_publish) ... ok
+test_evidence_failure_fails_closed (test_calibration_job.CalibrationJobTests.test_evidence_failure_fails_closed) ... ok
+test_geometry_change_before_click_rejected (test_calibration_job.CalibrationJobTests.test_geometry_change_before_click_rejected) ... ok
+test_profile_commit_failure_keeps_old_profile (test_calibration_job.CalibrationJobTests.test_profile_commit_failure_keeps_old_profile) ... ok
+test_release_failure_does_not_publish (test_calibration_job.CalibrationJobTests.test_release_failure_does_not_publish) ... ok
+test_does_not_expose_files_or_control (test_calibration_receiver.ReceiverTests.test_does_not_expose_files_or_control) ... ok
+test_token_ack_and_event_chain (test_calibration_receiver.ReceiverTests.test_token_ack_and_event_chain) ... ok
+test_atomic_snapshot_and_no_frame (test_capture_async.CaptureHTTP.test_atomic_snapshot_and_no_frame) ... ok
+test_firmware_error_propagates (test_client.ClientTests.test_firmware_error_propagates) ... ok
+test_fragmented_serial_and_boot_noise (test_client.ClientTests.test_fragmented_serial_and_boot_noise) ... ok
+test_non_ascii_rejected_before_any_input (test_client.ClientTests.test_non_ascii_rejected_before_any_input) ... ok
+test_reboot_invalidates_pending_input (test_client.ClientTests.test_reboot_invalidates_pending_input) ... ok
+test_timeout_never_replays_click (test_client.ClientTests.test_timeout_never_replays_click) ... ok
+test_us_layout_printable_ascii_is_defined (test_client.ClientTests.test_us_layout_printable_ascii_is_defined) ... ok
+test_completion_cannot_turn_a_live_snapshot_into_interruption (test_device_reset.ResetTests.test_completion_cannot_turn_a_live_snapshot_into_interruption) ... ok
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+test_deadline_and_thread_cancellation_with_slow_responses (test_frame_capture.CaptureTests.test_deadline_and_thread_cancellation_with_slow_responses) ... ok
+test_future_timestamp_is_invalid_and_expired_budget_skips_reader (test_frame_capture.CaptureTests.test_future_timestamp_is_invalid_and_expired_budget_skips_reader) ... ok
+test_http_capability_validation_and_states (test_frame_capture.CaptureTests.test_http_capability_validation_and_states) ... ok
+test_precancelled_does_not_connect (test_frame_capture.CaptureTests.test_precancelled_does_not_connect) ... ok
+test_settle_boundary_rejects_transition_frames_and_accepts_equality (test_frame_capture.CaptureTests.test_settle_boundary_rejects_transition_frames_and_accepts_equality) ... ok
+test_cancel_and_shutdown_during_capture_release_first (test_frame_capture.IntegrationTests.test_cancel_and_shutdown_during_capture_release_first) ... ok
+test_capture_keeps_serial_lease_and_next_action_usable (test_frame_capture.IntegrationTests.test_capture_keeps_serial_lease_and_next_action_usable) ... ok
+test_client_disconnect_requests_capture_cancellation (test_frame_capture.IntegrationTests.test_client_disconnect_requests_capture_cancellation) ... ok
+test_failure_and_skipped_mapping (test_frame_capture.IntegrationTests.test_failure_and_skipped_mapping) ... ok
+test_persistence_failure_keeps_action_and_updates_capture_state (test_frame_capture.IntegrationTests.test_persistence_failure_keeps_action_and_updates_capture_state) ... ok
+test_real_client_response_files_dedup_and_conflict (test_frame_capture.IntegrationTests.test_real_client_response_files_dedup_and_conflict) ... ok
+test_future_timestamp (test_frame_routes.FrameRoutes.test_future_timestamp) ... ok
+test_invalid (test_frame_routes.FrameRoutes.test_invalid) ... ok
+test_no_frame (test_frame_routes.FrameRoutes.test_no_frame) ... ok
+test_stale_snapshot_is_visible_not_fresh (test_frame_routes.FrameRoutes.test_stale_snapshot_is_visible_not_fresh) ... ok
+test_unavailable (test_frame_routes.FrameRoutes.test_unavailable) ... ok
+test_start_deduplicated_and_survives_api_clients (test_manager_ipc.ManagerIPC.test_start_deduplicated_and_survives_api_clients) ... ok
+test_start_failure_is_queryable (test_manager_ipc.ManagerIPC.test_start_failure_is_queryable) ... ok
+test_authenticated_identity_must_match_registered_process (test_manager_recovery.RecoveryTests.test_authenticated_identity_must_match_registered_process) ... ok
+test_pid_reuse_rejected (test_manager_recovery.RecoveryTests.test_pid_reuse_rejected) ... ok
+test_timeout_with_occupied_port_never_spawns (test_manager_recovery.RecoveryTests.test_timeout_with_occupied_port_never_spawns) ... ok
+test_unknown_existing_api_is_not_replaced (test_manager_recovery.RecoveryTests.test_unknown_existing_api_is_not_replaced) ... ok
+test_unproven_adopted_exit_not_restarted (test_manager_recovery.RecoveryTests.test_unproven_adopted_exit_not_restarted) ... ok
+test_venv_descendant_identity_and_clean_launcher_exit (test_manager_recovery.RecoveryTests.test_venv_descendant_identity_and_clean_launcher_exit) ... ok
+test_windows_absent_listener_timeout_checks_bind_before_spawn (test_manager_recovery.RecoveryTests.test_windows_absent_listener_timeout_checks_bind_before_spawn) ... ok
+test_boundaries_and_no_clamping (test_native_pointer.NativePointerTests.test_boundaries_and_no_clamping) ... ok
+test_direct_mapping_rejects_invalid_axes (test_native_pointer.NativePointerTests.test_direct_mapping_rejects_invalid_axes) ... ok
+test_inverse_and_identity_binding (test_native_pointer.NativePointerTests.test_inverse_and_identity_binding) ... ok
+test_move_and_click_share_positive_mapping (test_native_pointer.NativePointerTests.test_move_and_click_share_positive_mapping) ... ok
+test_negative_axes_rejected (test_native_pointer.NativePointerTests.test_negative_axes_rejected) ... ok
+test_changed_source_invalidates_profile (test_native_service.NativeServiceTests.test_changed_source_invalidates_profile) ... ok
+test_click_outside_measured_region (test_native_service.NativeServiceTests.test_click_outside_measured_region) ... ok
+test_diagnostic_click_cannot_bypass_verification (test_native_service.NativeServiceTests.test_diagnostic_click_cannot_bypass_verification) ... ok
+test_diagnostic_move_with_unverified_legacy_profile (test_native_service.NativeServiceTests.test_diagnostic_move_with_unverified_legacy_profile) ... ok
+test_diagnostic_move_without_profile (test_native_service.NativeServiceTests.test_diagnostic_move_without_profile) ... ok
+test_diagnostic_new_source_ignores_saved_mapping (test_native_service.NativeServiceTests.test_diagnostic_new_source_ignores_saved_mapping) ... ok
+test_diagnostic_rejects_mixed_buttons_before_any_input (test_native_service.NativeServiceTests.test_diagnostic_rejects_mixed_buttons_before_any_input) ... ok
+test_diagnostic_rejects_old_frame_with_saved_profile (test_native_service.NativeServiceTests.test_diagnostic_rejects_old_frame_with_saved_profile) ... ok
+test_entire_batch_rejected_before_input (test_native_service.NativeServiceTests.test_entire_batch_rejected_before_input) ... ok
+test_fault_invalidates_profile (test_native_service.NativeServiceTests.test_fault_invalidates_profile) ... ok
+test_frame_sequence_regression_invalidates (test_native_service.NativeServiceTests.test_frame_sequence_regression_invalidates) ... ok
+test_future_timestamp_rejected (test_native_service.NativeServiceTests.test_future_timestamp_rejected) ... ok
+test_geometry_required_even_without_capture (test_native_service.NativeServiceTests.test_geometry_required_even_without_capture) ... ok
+test_guard_failure_blocks_click_and_invalidates_profile (test_native_service.NativeServiceTests.test_guard_failure_blocks_click_and_invalidates_profile) ... ok
+test_manual_visual_move_cannot_click (test_native_service.NativeServiceTests.test_manual_visual_move_cannot_click) ... ok
+test_old_final_frame_does_not_repeat_input (test_native_service.NativeServiceTests.test_old_final_frame_does_not_repeat_input) ... ok
+test_single_move_and_dedup (test_native_service.NativeServiceTests.test_single_move_and_dedup) ... ok
+test_startup_diagnostics_are_read_once_by_serial_owner (test_native_service.NativeServiceTests.test_startup_diagnostics_are_read_once_by_serial_owner) ... ok
+test_static_old_frame_is_geometry_only (test_native_service.NativeServiceTests.test_static_old_frame_is_geometry_only) ... ok
+test_verified_move_returns_evidence_without_waiting_for_static_frame (test_native_service.NativeServiceTests.test_verified_move_returns_evidence_without_waiting_for_static_frame) ... ok
+test_occluded_disk_is_measured_without_target_prior (test_pointer_geometry.GeometryTests.test_occluded_disk_is_measured_without_target_prior) ... ok
+test_saved_camera_overlap (test_pointer_geometry.GeometryTests.test_saved_camera_overlap) ... ok
+test_scene_change_still_rejected (test_pointer_geometry.GeometryTests.test_scene_change_still_rejected) ... ok
+test_small_fragment_cannot_establish_center (test_pointer_geometry.GeometryTests.test_small_fragment_cannot_establish_center) ... ok
+test_anchor_avoids_textured_patch_and_challenge_overlap (test_pointer_guard.GuardTests.test_anchor_avoids_textured_patch_and_challenge_overlap) ... ok
+test_distinct_frames_temporal_span_and_jitter (test_pointer_guard.GuardTests.test_distinct_frames_temporal_span_and_jitter) ... ok
+test_guard_delayed_frames_and_direction_failure (test_pointer_guard.GuardTests.test_guard_delayed_frames_and_direction_failure) ... ok
+test_local_scene_is_classified_but_strict_response_still_rejects (test_pointer_guard.GuardTests.test_local_scene_is_classified_but_strict_response_still_rejects) ... ok
+test_response_requires_two_expected_footprints (test_pointer_guard.GuardTests.test_response_requires_two_expected_footprints) ... ok
+test_thin_tail_removed_from_shape_but_counted_as_change (test_pointer_guard.GuardTests.test_thin_tail_removed_from_shape_but_counted_as_change) ... ok
+test_top_edge_not_masked_but_clock_change_ignored (test_pointer_guard.GuardTests.test_top_edge_not_masked_but_clock_change_ignored) ... ok
+test_error_plus_uncertainty_is_bound (test_scope.ScopeTests.test_error_plus_uncertainty_is_bound) ... ok
+test_expired_review_cannot_publish (test_scope.ScopeTests.test_expired_review_cannot_publish) ... ok
+test_fixed_mapping_can_be_reverified_after_restart (test_scope.ScopeTests.test_fixed_mapping_can_be_reverified_after_restart) ... ok
+test_fixed_scope_and_approval (test_scope.ScopeTests.test_fixed_scope_and_approval) ... ok
+test_guard_failure_stops_without_fitting_or_publication (test_scope.ScopeTests.test_guard_failure_stops_without_fitting_or_publication) ... ok
+test_scene_change_requires_explicit_review (test_scope.ScopeTests.test_scene_change_requires_explicit_review) ... ok
+test_tampered_image_rejected (test_scope.ScopeTests.test_tampered_image_rejected) ... ok
+test_uncertainty_and_generation_rejected (test_scope.ScopeTests.test_uncertainty_and_generation_rejected) ... ok
+test_usable_area_is_explicit_and_repeated (test_scope.ScopeTests.test_usable_area_is_explicit_and_repeated) ... ok
+test_exclusivity_replay_conflict_and_expiry (test_scope_http.ScopeHttpTests.test_exclusivity_replay_conflict_and_expiry) ... ok
+test_failed_open_leaves_no_owner_thread (test_serial_actor.SerialActorTests.test_failed_open_leaves_no_owner_thread) ... ok
+test_single_owner_and_independent_heartbeat (test_serial_actor.SerialActorTests.test_single_owner_and_independent_heartbeat) ... ok
+test_bad_later_step_rejected_before_any_input (test_service.ServiceTests.test_bad_later_step_rejected_before_any_input) ... ok
+test_cancel_releases_and_stops_remaining_text (test_service.ServiceTests.test_cancel_releases_and_stops_remaining_text) ... ok
+test_capture_failure_does_not_replay_input (test_service.ServiceTests.test_capture_failure_does_not_replay_input) ... ok
+test_duplicate_request_does_not_repeat_input (test_service.ServiceTests.test_duplicate_request_does_not_repeat_input) ... ok
+test_expired_queued_action_never_clicks (test_service.ServiceTests.test_expired_queued_action_never_clicks) ... ok
+test_frame_must_follow_settle_not_just_input (test_service.ServiceTests.test_frame_must_follow_settle_not_just_input) ... ok
+test_held_input_is_released_before_return (test_service.ServiceTests.test_held_input_is_released_before_return) ... ok
+test_modifier_only_usage_and_reserved_error_usages (test_service.ServiceTests.test_modifier_only_usage_and_reserved_error_usages) ... ok
+saved_overlap {'valid': True, 'reason': 'matched', 'center': [271.30102348327637, 599.8010234832764], 'outside_pixels': 1, 'candidates': [{'center': [350.29411764705884, 539.910294117647], 'box': [336, 526, 29, 29], 'area': 680, 'label': 1, 'position_verified': True}, {'center': [271.30102348327637, 599.8010234832764], 'box': [256, 586, 14, 25], 'area': 166, 'label': 2, 'position_verified': True, 'centroid': [261.2831325301205, 597.0903614457832], 'arc_fit': {'center': [271.30102348327637, 599.8010234832764], 'radius': 14.698976516723633, 'arc_degrees': 128.17077620918914, 'support_points': 32, 'center_spread_px': 1.118033988749895}}], 'localized_scene_changes': []}
+{"event": "ready", "pid": 11, "instance_id": "a"}
+test_crash_does_not_loop (test_service_restart.ManagerTests.test_crash_does_not_loop) ... ok
+{"event": "health_failed", "pid": 11, "error": "fault"}
+test_health_failure_waits_without_replacement (test_service_restart.ManagerTests.test_health_failure_waits_without_replacement) ... ok
+{"event": "ready", "pid": 11, "instance_id": "a"}
+{"event": "ready", "pid": 12, "instance_id": "b"}
+test_only_clean_restart_exit_relaunches (test_service_restart.ManagerTests.test_only_clean_restart_exit_relaunches) ... ok
+test_auth_and_old_instance (test_service_restart.RestartTests.test_auth_and_old_instance) ... ok
+test_busy_rejected_without_cancelling (test_service_restart.RestartTests.test_busy_rejected_without_cancelling) ... ok
+test_release_failure_blocks_clean_restart (test_service_restart.RestartTests.test_release_failure_blocks_clean_restart) ... ok
+test_remote_rejected (test_service_restart.RestartTests.test_remote_rejected) ... ok
+test_response_idempotence_and_admission_closed (test_service_restart.RestartTests.test_response_idempotence_and_admission_closed) ... ok
+test_unmanaged_disabled (test_service_restart.RestartTests.test_unmanaged_disabled) ... ok
+test_absent_device_keeps_api_and_frame_available (test_system_routes.SystemRoutes.test_absent_device_keeps_api_and_frame_available) ... ok
+test_log_auth_whitelist_limits_and_redaction (test_system_routes.SystemRoutes.test_log_auth_whitelist_limits_and_redaction) ... ok
+test_fullscreen_grid (test_visual_calibration.VisualCalibrationTests.test_fullscreen_grid) ... ok
+test_review_evidence_and_native_click (test_visual_calibration.VisualCalibrationTests.test_review_evidence_and_native_click) ... ok
+test_signed_fit_and_uncertainty (test_visual_calibration.VisualCalibrationTests.test_signed_fit_and_uncertainty) ... ok
+
+----------------------------------------------------------------------
+Ran 125 tests in 52.941s
+
+OK
+TEST_EXIT=0
+usage: __main__.py [-h] [--role {manager,api,capture}]
+
+options:
+  -h, --help            show this help message and exit
+  --role {manager,api,capture}
+HELP_EXIT=0
+PACKAGE D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\src\iphone_backend\__init__.py
+PAGE_EXISTS True
+IMPORT_EXIT=0
+Skill is valid!
+SKILL_EXIT=0
+SHORTCUT_TARGET=D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.venv\Scripts\pythonw.exe ARGUMENTS="D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tools\deploy.py" start
+PC_EXISTS=False
+PORT_8890_LISTENERS=0
+  File "<string>", line 1
+    import psutil,pathlib; root=str((pathlib.Path.cwd().parent/'pc')).lower(); matches=[]; exec('for p in psutil.process_iter([\
+                                                                                                ^
+SyntaxError: unterminated string literal (detected at line 1)
+OLD_PC_PROCESS_MATCHES []
+OLD_PC_PROCESS_MATCHES []
+{"api_pid": 45084, "manager_pid": 49808, "capture_pid": 53584, "restart_verified": true}
+RESTART_EXIT=0
+POST_RESTART_FRAME_STATUS=200 FRAME_ID=9693468caa114bdba303b73174a52102:1488 BYTES=61878
+C:/Users/J/.codex/skills/iphone\SKILL.md:8:当前方案为 PC → USB 串口 → ESP32-S3 → BLE HID → iPhone，画面通过 AirPlay 返回。板子 USB 接 PC，手机通过蓝牙接收输入。不要套用历史 USB HID 接线或启动旧 8890 服务。
+DOCUMENTS_CHECKED 15
+MISSING_COUNT 0

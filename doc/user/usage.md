@@ -6,16 +6,18 @@
 
 固件蓝牙名称为 **S3-iPhone-HID**。板子连接 PC 的 USB，iPhone 开启辅助触控并在“设备 → 蓝牙设备”中选择它。初次配对使用 Just Works + bonding，动作仅在连接已加密且对应报告订阅完成后执行。
 
-先按根目录 README 安装 pc/requirements.txt，再从项目根目录执行：
+原生绝对定位测试建议固定竖屏，并让手机保持稳定倾角。曾观察到方向异常，用户反馈此前手机可能水平放置；倾斜放回后多次恢复正向，但尚未通过受控实验确认姿态传感器是根因。AirPlay为主要画面依据，仍须检查实际指针响应，不因摆放倾斜就跳过验证。详见[方向异常踩坑记录](../../backend/doc/direction-root-cause.md)。
+
+当前日常入口为 [统一 Backend](../../backend/doc/usage.md)，通过 8892 获取控制与画面。下列直接串口 CLI 仅在 API 已释放串口后用于诊断；不能与常驻服务并行。先按根目录 README 安装 backend 包，再从项目根目录执行：
 
 ```powershell
-$python = '.\.venv\Scripts\python.exe'
-& $python pc\bridge.py status
-& $python pc\bridge.py move 20 0
-& $python pc\bridge.py click
+$python = '.\backend\.venv\Scripts\python.exe'
+& $python -m iphone_backend.esp32.serial_transport status
+& $python -m iphone_backend.esp32.serial_transport move 20 0
+& $python -m iphone_backend.esp32.serial_transport click
 # 先确认 iPhone 的测试文本框已获得焦点、硬件键盘布局为英文。
-& $python pc\bridge.py text 'ble123'
-& $python pc\bridge.py key 42  # Backspace
+& $python -m iphone_backend.esp32.serial_transport text 'ble123'
+& $python -m iphone_backend.esp32.serial_transport key 42  # Backspace
 ```
 
 默认自动选择唯一的 CH343；存在多个候选时必须指定 `--port COMx`。用 `--log .runtime\commands.jsonl` 留存请求/响应。日志会包含输入内容，仅本地保存。`monitor --seconds 30` 只查询状态，不发送测试输入。
@@ -32,7 +34,7 @@ ESP32 GCC 会拼接包含多层 `../` 的头文件路径，在较深的克隆目
 
 - [固件](../../firmware/serial_ble_hid/serial_ble_hid.ino)：UART0 / Serial0，115200 8N1；Arduino ESP32 3.3.12 + 独立 **NimBLE-Arduino 2.3.8**。不注册 USB HID，不启用 Wi-Fi。
 - [报告描述符](../../firmware/serial_ble_hid/hid_reports.h)：键盘 ID 1，鼠标 ID 2；BLE 报告值不额外前置 Report ID。
-- [CLI](../../pc/bridge.py)：标准库与 pyserial，显式控制 DTR/RTS；超时或重启后不自动重放动作。
+- [CLI](../../backend/src/iphone_backend/esp32/serial_transport.py)：标准库与 pyserial，显式控制 DTR/RTS；超时或重启后不自动重放动作。
 - [构建脚本](../../scripts/build.ps1)：工具链保存在本仓库 .tools/，NimBLE-Arduino 位于 .build-deps/，编译中间文件位于 .build/work/，固件输出位于 .build/。这些目录不提交 Git。`-SetupOnly` 只安装依赖；默认只编译；`-Upload -Port COM4` 只在确认目标端口与备份后使用，不允许与 `-SetupOnly` 同用。
 
 ```powershell
@@ -41,9 +43,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -SetupOnly
 # 已确认端口与备份后：
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload -Port COM4
-& $python -m unittest discover -s tests -v
+& $python -m unittest discover -s backend/tests -v
 # 实机串口协议检查：仅状态与释放，不输入字符或移动指针。
-& $python tests\serial_smoke.py
+& $python backend\tools\serial_smoke.py
 ```
 
 目前实现 hello/status/ping/diag、mouse.move/click/down/up/scroll、keyboard.tap/down/up、release_all/cancel。一次只执行一个动作，移动拆成每 20 ms 最多 8 单位；单击和按键有 60 ms 按下间隔。CLI 的 text 在 PC 上转换为连续 keyboard.tap。diag 返回实际 Report Map 和 Report Reference；status 包含协议模式与最近报告字节。
@@ -70,6 +72,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload 
 
 微信完整操作测试、子代理执行和主代理独立验收见 [case1 测试用例](../../tests/case1_wechat_send_hello/doc/test-case.md)。工具、文档和忽略提交的运行证据集中在该测试目录。
 
-## 可选的截图服务
+## 统一截图服务
 
-pc/snapshot.py 从 `http://127.0.0.1:8891/frame` 获取图像，并检查 `X-Frame-Time`。服务来自原工作区的 AirPlay 取帧组件，不包含在此仓库。运行纯键鼠 CLI 不需要该服务；需要视觉自动化测试时必须先提供兼容的服务。不要把端口存在或串口 sent 回执视为手机操作成功。
+`python -m iphone_backend.snapshot <文件路径>` 从 8892/frame 获取图像并检查原始帧时间；人工看图可直接请求最新快照，动作证据仍要求新鲜帧。取帧实现随 backend 包安装，由主控统一启动；UxPlay 路径通过 UXPLAY_DIR 指定。不要把 HTTP 成功或串口 sent 当作手机操作成功。

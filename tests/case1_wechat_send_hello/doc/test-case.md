@@ -15,7 +15,7 @@
 - 本文保存流程与验收规则。
 - [live_case.py](../live_case.py) 初始化运行目录、唯一消息和阶段记录，不控制手机，也不自动判定视觉成功。
 - 每轮原始证据放本测试目录的 `runs/{id}/`，不提交截图或聊天内容。
-- 操作使用 [bridge.py](../../../pc/bridge.py)，截图使用 [snapshot.py](../../../pc/snapshot.py)。
+- 操作使用 [串口诊断客户端](../../../backend/src/iphone_backend/esp32/serial_transport.py)，截图使用 [snapshot.py](../../../backend/src/iphone_backend/snapshot.py)。常驻 API 运行时只通过 HTTP 客户端操作，不另开串口。
 
 在本测试目录运行（tests/case1_wechat_send_hello）：
 
@@ -27,6 +27,8 @@ $python = '..\..\.venv\Scripts\python.exe'
 ```
 
 ## 职责与执行
+
+代码开发与测试执行分离：主代理编写和修复正式代码、原型脚本及测试代码；6.1 Terra / Medium 子代理只执行测试和操作 iPhone，不参与开发。测试失败时，子代理提交复现步骤、截图和日志，由主代理修复后交回子代理重测；主代理独立验收。该模型也是最终 iPhone UI 操作模型，所有测试执行均使用此配置。
 
 操作模型、推理强度和分工遵循项目 [AGENTS.md](../../../AGENTS.md#iphone-实机操作分工)。主代理派发时须实际设置相应模型与推理强度，并在本轮验收记录中保存实际配置；记录工具的 `--model` 只保存标签，不会创建或切换子代理。历史记录没有显式推理强度时保持未知，不补写为 Medium。
 
@@ -74,7 +76,7 @@ $python = '..\..\.venv\Scripts\python.exe'
 
 ## 常驻服务执行模式
 
-使用 [PC 常驻服务](../../../pc/doc/service.md) 时，先由主代理启动服务，子代理只调用 service_client.act，禁止同时打开 Bridge 串口。run.json 记录 transport=http_service、实际模型及推理强度、service instance_id 和对照轮次。每次动作可直接返回截图，子代理应合并工具调用与图片查看。live_case.py 阶段记录方式不变。
+使用 [PC 常驻服务](../../../backend/doc/service.md) 时，先由主代理启动服务，子代理只调用 service_client.act，禁止同时打开 Bridge 串口。run.json 记录 transport=http_service、实际模型及推理强度、service instance_id 和对照轮次。每次动作可直接返回截图，子代理应合并工具调用与图片查看。live_case.py 阶段记录方式不变。
 
 服务保留相对位移，并新增自动视觉定位的 move_to/click_at。使用视觉绝对模式（visual_relative）时在 start 后先 move_to(250,540) 验证居中，此耗时纳入 start→sent；每次绝对动作重新获取参考，不能认为一次居中后坐标永久有效。输入法与探测要求不变；不得为了速度省略收件人、精确文本和发送后核验。capture_error不代表输入失败，只观察，不重放动作。每请求结束释放输入，多步按住操作必须放在一个有界请求内。
 
@@ -95,7 +97,7 @@ $python = '..\..\.venv\Scripts\python.exe'
 
 ## 原生 HID 后端的用例执行
 
-显式选择 `coordinate_backend=native_hid` 时，先完成当前设备/连接的 verify 与 scope 验收；不套用旧视觉后端每次重新定位和居中流程。指针动作必须位于批准区域，使用新页面截图决定目标。键盘及纯观察请求的结果可能仍标默认 visual_relative；这不表示实际调用了视觉鼠标，须按请求内的动作判断。准备起点由操作子代理自主完成，单列计时；保持文件传输助手输入为空、键盘收起，再开始实际返回桌面。
+显式选择 `coordinate_backend=native_hid` 时，先完成当前设备/连接的 verify 与 scope 验收；不套用旧视觉后端每次重新定位和居中流程。verified_region仅记录实测覆盖范围，不限制屏内目标；使用新页面截图决定目标。自动检查误判时，用户授权的人工看图分支可使用manual_visual原生移动，确认截图位置后提供reviewed_action_id单独原生点击；须明确记录分支，不能记作自动guard通过。键盘及纯观察请求的结果可能仍标默认 visual_relative；这不表示实际调用了视觉鼠标，须按请求内的动作判断。准备起点由操作子代理自主完成，单列计时；保持文件传输助手输入为空、键盘收起，再开始实际返回桌面。
 
 ## 2026-11-01 固件 0.3.3 修饰键修复后严格复测
 
@@ -116,6 +118,33 @@ $python = '..\..\.venv\Scripts\python.exe'
 修饰键机制及失败对照见[固件说明](../../../firmware/serial_ble_hid/doc/keyboard-modifiers.md)。固件0.3.3、PC65项隔离测试通过。本轮功能成功不能替代跨设备、长时间运行及任意微信入口验证。
 
 三轮起点准备操作分别27.353/1.103/1.149秒（不含此前校准），准备图片和统计见各run的operator_summary.json。阶段事件是在完成后补记，耗时使用原始截图frame_time，不能使用事件recorded_at替代操作时间。
+
+## 2026-11-01 相对鼠标复测未完成
+
+同一个Terra Medium在0.3.3上使用原始相对move/click（未混用native或视觉绝对）。相对移动可将指针从聊天输入区移至空白，并在回桌面后移至微信图标内；两处单次相对点击均reports_sent/released，但画面未出现预期变化。主代理独立查看diagnostic-aim1.jpg和diagnostic-wechat-click.jpg，确认图标内指针与点击后仍主屏。最后只读观察因stale_or_unknown无新图，不能据此断言后续画面。
+
+准备诊断105.741秒，正式run为0，发送0；不作为成功耗时，也不计算三轮中位数。证据在.runtime/relative-benchmark-20261101/operator_summary.json及同目录截图/请求。当前结论仅为相对移动有效、相对按钮点击未验证成功，根因未定。需先修复/验证相对点击，再作同条件性能对照。
+
+
+## 2026-11-02 连续响应保护全屏前置验证未通过
+
+同一Terra Medium完成主屏检查后，以固定正向映射执行40点范围复验。10点完成，第11目标(471,60)在probe阶段因视觉响应证据不足而停止；主代理独立审图确认未观察到反向，但旧指针差分区域因高度58px超过候选48px上限被丢弃。没有放宽条件、重拟合或继续操作。
+
+全屏点击范围未批准，微信测试正式run为0、发送0，不能提供新的微信成功耗时或与历史123.267秒中位数作速度比较。范围采样约21.34秒不属于微信流程时间。证据与代码更改见[连续响应验收](../../../backend/doc/pointer-response-validation.md)。
+
+
+第二轮前置复验（pointer guard v2）：细尾分割问题修复，原(471,60)通过，17/40后在真实角落(0,0)观察到约(21,21)落点，按约束停止。仍无正式微信run或发送，不新增成功耗时。完整证据在`.runtime/fullscreen-guard-retest-20261102/`及[响应验收记录](../../../backend/doc/pointer-response-validation.md)。
+
+
+可操作区域32点复验后续：首轮25/32因角标局部变化中断；分离无点击场景审核后，下一轮在anchor/probe阶段复现双轴反向，0/32通过，立即停止。未运行微信、未发送，不产生新的成功耗时。主代理核对原图与正向串口命令，记录见[响应验收](../../../backend/doc/pointer-response-validation.md)和`.runtime/usable-area-v3-20261102/main-evaluation.json`。
+
+## 2026-11-02 全屏校准与 hello 补充用例
+
+run `20261102_140949_85ef`：用户指定消息hello。9训练+5独立点正式视觉校准通过，独立点目测中心误差0/0/1/1/0px、观测不确定度5px。校准及服务修复证据在`.runtime/fullscreen-hello-20261102/`。
+
+严格硬件项未通过：Ctrl+Space未取得English (US)选中证据，ASCII探测得到1a-a-1及组合态。清理后切换已有屏幕键盘补充分支，使用ESP32原生鼠标、人工看图定位及带reviewed_action_id的原生点击。English (US)软键盘上精确输入a_A-1并清空，两个独立草稿均为小写hello，单次发送后出现一个本轮hello气泡、输入框空、无可见失败。主代理独立看图验收补充变体通过，不追认硬件键盘或自动guard完整用例通过。
+
+start→sent为1952.613秒，包含开发、重启、校准与多次恢复，不作性能基线。80个action请求文件、76张本地截图；发送request_id为d529b6e2bd044e589430099900075cee，released=true。正式结论见该run的evaluation.json/evaluation.md，原图sent.jpg。
 
 ## 2026-11-02 修饰键原型恢复边界
 

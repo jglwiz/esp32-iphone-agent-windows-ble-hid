@@ -1,0 +1,48 @@
+[
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\doc\\direction-root-cause.md",
+    "sha256": "ddf4f869099eff1f2516b1c54f35f58f596e754982377b96baa470859195d82e",
+    "target": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\doc\\direction-root-cause.md"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\doc\\native-hid-integration-plan.md",
+    "sha256": "2ee64592d8e3172d4f66e07188e487874c66a5c19fc9b06208a6ca501541d48c",
+    "target": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\doc\\native-hid-integration-plan.md"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\doc\\native-hid-validation.md",
+    "sha256": "962cf9f7195323e93d93d114ae194f79d77d05d571bf5494612d1a77153e4a82",
+    "target": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\doc\\native-hid-validation.md"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\doc\\pointer-response-validation.md",
+    "sha256": "fb2793c67ebd359295932e3932f3e3168becd3d3ea40fcdbb75baa231acc18b5",
+    "target": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\doc\\pointer-response-validation.md"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\doc\\service-management.md",
+    "sha256": "4e83c5cf39273642821e69f6d9c8bb729ecb1924dcd84c25dd55425f482062e0",
+    "target": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\doc\\service-management.md"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\doc\\service.md",
+    "sha256": "83599299a4d501261cad348e6da373d0ba8eadaa678de5fdb3bf01c533697b8c",
+    "target": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\doc\\service.md"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\calibration_page\\index.html",
+    "sha256": "e3355ee877a744cec2a942a5916d9d08e9b490123bbff126ff878821ca1529ce"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\requirements.txt",
+    "sha256": "0b81718d1cbe8a7696e45a9388c9205272b5e345cd79d0cf1ccfb7a9fd1925e9"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\requirements-service.txt",
+    "sha256": "ccbc267d2a136b2fb9440d99e8a17b8114eb39c6c7bfcf077ef11550fd3f3692"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\serial_smoke.py",
+    "sha256": "2861d1a5d93ec8a7a7564e7868b4c2539416ef6c7ea1d16ffd64afa951226c62"
+  }
+]

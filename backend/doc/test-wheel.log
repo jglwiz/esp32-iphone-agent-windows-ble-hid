@@ -1,0 +1,26 @@
+Processing d:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: iphone-backend
+  Building wheel for iphone-backend (pyproject.toml): started
+  Building wheel for iphone-backend (pyproject.toml): finished with status 'done'
+  Created wheel for iphone-backend: filename=iphone_backend-0.1.0-py3-none-any.whl size=74155 sha256=4d6778975215f562bb440353cb920e99c0ff9435fe4294d880001da9d299f1e5
+  Stored in directory: D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.tmp\pip-ephem-wheel-cache-d42rf29n\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1
+Successfully built iphone-backend
+
+[notice] A new release of pip is available: 24.0 -> 26.2.2
+[notice] To update, run: D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.venv\Scripts\python.exe -m pip install --upgrade pip
+WHEEL_EXIT=0
+Processing d:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.runtime\wheels\iphone_backend-0.1.0-py3-none-any.whl
+Installing collected packages: iphone-backend
+Successfully installed iphone-backend-0.1.0
+
+[notice] A new release of pip is available: 24.0 -> 26.2.2
+[notice] To update, run: D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.venv\Scripts\python.exe -m pip install --upgrade pip
+INSTALL_EXIT=0
+PACKAGE_PATH D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-install\wheel-check\iphone_backend\__init__.py
+IN_TARGET True
+PAGE_FILES ['index.html']
+PROJECT_ROOT D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend
+RUNTIME_DIR D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.tmp
+IMPORT_EXIT=0

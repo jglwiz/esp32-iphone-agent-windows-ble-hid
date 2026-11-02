@@ -1,0 +1,158 @@
+[
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\absolute_pointer.py",
+    "sha256": "d1ca425a81f2b1694130c2b1c5dea21ccfb2bd35e40d11bb8eda50034323c149"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\bridge.py",
+    "sha256": "d67ab4fe9ca0a8be7ea9fe5b2325939934c91be157181374df844b1fbdc8744f"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\calibration.py",
+    "sha256": "acba1324e41dc71ce71565e556859336ed3dfce5e267c9724ed06f07be622b84"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\calibration_jobs.py",
+    "sha256": "9616869d92762c1b0d0c1010cef3ae5478985da45448ef391d6a66f8ba5882d6"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\calibration_receiver.py",
+    "sha256": "3b9fe1052a24a9ef09a6470c5ba03d194ade252791c39f4ad5612609c42438d4"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\frame_capture.py",
+    "sha256": "f058e50b31c381ca8d5fcd8bd7f8f9136de27453385acab083e01b6e25379043"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\native_pointer.py",
+    "sha256": "4c3d0799537f5595931f252a54e484e2ce86fb6e3c4c662f41a8d81eba5e6d20"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\pointer_geometry.py",
+    "sha256": "72a13da9821f8ad123615f69c0c5d898b952d4360f463fa7a2feee2caaa9d064"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\pointer_guard.py",
+    "sha256": "9d6d1919a9a48b4fa96703d021a345e94c756e207f9a53ac1aa642448896c810"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\pointer_vision.py",
+    "sha256": "4a6a8cbb630d59be7c832ec57223e65ed898d6bcd016af7e2dd22544a837ec94"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\scope.py",
+    "sha256": "f7efd70c45835149f3e808b27e51f63df82298061706146c6f55d0d6e4dca4bd"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\service.py",
+    "sha256": "fb75ee2d64951512845cfee43a4099cb3a6be9df5914f1e127184ae9ce5bd18f"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\service_client.py",
+    "sha256": "ca1637474cc1b2cd62481f692fd70240335bb9b0825be64889f23e4413e0b3fb"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\service_manager.py",
+    "sha256": "a887f1da3732556c4d977a1a881e2bd0ad26b95e702610640a11dff8e7eafc65"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\service_restart.py",
+    "sha256": "22e26b81b4b61762715967620b5d9b7a517056d09c0eadaedec5143222553dce"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\snapshot.py",
+    "sha256": "3d797ee3b46b3ff3a9a4de52c9fa77d94d61d0a74d1f58f4ff7a049bf3951e09"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\visual_calibration.py",
+    "sha256": "1601d5d11c95956e24c5c7473f06007f8fc93f14a4796e430ec39db77583d161"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\pc\\visual_calibration_capture.py",
+    "sha256": "1edd558b378994013dfe255acdee83e175a12c48057554092768f1168bbccfe1"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\upstream-windows\\server\\hidagent\\capture_worker.py",
+    "sha256": "7ad8167c83545af642a7eeb22c659c02e43841967947624ce8deb3ddc6cd701a"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\upstream-windows\\server\\hidagent\\frame_snapshot.py",
+    "sha256": "6599a8205364fefc8ac11538a19c11cea2d105b211021b19d7f7493aa1fe52f0"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\upstream-windows\\server\\hidagent\\screen_pipe.py",
+    "sha256": "05796d887d611cf4647d0336344a54d483d2b96d4be670545f2552d1d91b5cc3"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\upstream-windows\\server\\hidagent\\screen_win.py",
+    "sha256": "02498dc8ddb0895a92a762782a135601c4a9db17312a6c2305e5a1525d77ce32"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\upstream-windows\\server\\hidagent\\screen.py",
+    "sha256": "24c2ae6cdc3cd93e02f00b638fe483932559d258cc11a6f17ceac594a7a29f49"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_absolute_pointer.py",
+    "sha256": "53cb335d094cfd665523c430b1edb3bf226e2805e5d3aeeab46d371e428a57c0"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_calibration.py",
+    "sha256": "e8a517a440c5cbbc33d7d45a0823769ba961e806098eea0413e0de55d7f3ff3d"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_calibration_http.py",
+    "sha256": "d100001d80bfa80ba6d72c7b6fd7a8f7e613667f513f2c2dfdf412bfc1d403dd"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_calibration_job.py",
+    "sha256": "a9630ae15daeca20fda03076a9c33614c9cadbdd054656eb8690152b7391a05b"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_calibration_receiver.py",
+    "sha256": "af962361696f07d85e7d8db75824c5605219eaa2e071b7d44f24e5dae68a0228"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_client.py",
+    "sha256": "5f2f09ded2766f57621f7707cb8e9c4b8c06583fdc034e14714c9d29c1f014cb"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_frame_capture.py",
+    "sha256": "b0953213862c383d64fc29349344ca37a0137fa98a80f01c3ea641c9fb4e74e3"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_native_pointer.py",
+    "sha256": "b92d28279e8e44f9001ad3b88dd8fa33b47285eb2071672de706e7af61e8131e"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_native_service.py",
+    "sha256": "23f8afd4fd9c46970d7909265d96b99f377e29486dcdca54080051434511b9b6"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_pointer_geometry.py",
+    "sha256": "91c357141aac3c068e289059095c34c6580fcca2ca20aed0fd754c879bd8ea13"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_pointer_guard.py",
+    "sha256": "6b9e8a4bd17f503445e1983df636dc791c52e059f2cc3162947cf92a9aa5b705"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_scope.py",
+    "sha256": "4cc631df0217681b00b1c116c9c452099da6eb85463c6ec8522d7c1feb3a84c7"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_scope_http.py",
+    "sha256": "35a46e7d975aee141162344dbe57a80d45d177f2dcd3f70c21316810e9c4dcf4"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_service.py",
+    "sha256": "89306830c630ff7a3daccdf0e4eb20b51495cc06d3870e5147e354da6c3cd2b0"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_service_restart.py",
+    "sha256": "64799fad1cfbff62b299c53cfb6f048b28b6ec3c8dba1ac1d0445fc3402b3d20"
+  },
+  {
+    "source": "D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\tests\\test_visual_calibration.py",
+    "sha256": "c9a1e3ac9cf2c81b0d29d7665f0a7a369a79de33e5e93dab0009f1facdba0d8e"
+  }
+]

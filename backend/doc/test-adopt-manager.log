@@ -1,0 +1,31 @@
+test_pid_reuse_rejected (test_manager_recovery.RecoveryTests.test_pid_reuse_rejected) ... ok
+test_timeout_with_occupied_port_never_spawns (test_manager_recovery.RecoveryTests.test_timeout_with_occupied_port_never_spawns) ... ok
+test_unknown_existing_api_is_not_replaced (test_manager_recovery.RecoveryTests.test_unknown_existing_api_is_not_replaced) ... ok
+test_unproven_adopted_exit_not_restarted (test_manager_recovery.RecoveryTests.test_unproven_adopted_exit_not_restarted) ... ok
+test_windows_absent_listener_timeout_checks_bind_before_spawn (test_manager_recovery.RecoveryTests.test_windows_absent_listener_timeout_checks_bind_before_spawn) ... FAIL
+
+======================================================================
+FAIL: test_windows_absent_listener_timeout_checks_bind_before_spawn (test_manager_recovery.RecoveryTests.test_windows_absent_listener_timeout_checks_bind_before_spawn)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_manager_recovery.py", line 20, in test_windows_absent_listener_timeout_checks_bind_before_spawn
+    self.assertIn('exited during startup',manager.api_error)
+AssertionError: 'exited during startup' not found in 'TypeError: Object of type MagicMock is not JSON serializable'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.052s
+
+FAILED (failures=1)
+TEST_EXIT=1

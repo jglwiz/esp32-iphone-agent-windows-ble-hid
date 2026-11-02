@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.tmp/
+.test-install/
+.venv/
+.runtime/
+.deployment.json
+build/
+dist/
+tests/fixtures/camera-overlap/

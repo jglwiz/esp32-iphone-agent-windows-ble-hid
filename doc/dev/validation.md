@@ -2,6 +2,8 @@
 
 2026-11-02修饰键复发调查已恢复硬件输入，最终原版0.3.3的`1zAz1`及`1a_A-1`实测通过，但根因未找到，不能保证不复发。未新增微信发送或完整端到端通过记录；失败对照、临时固件实验和回刷验证见[修饰键调查](../../firmware/serial_ble_hid/doc/keyboard-modifiers.md#原型对照与最终恢复)。
 
+本文保留首轮固件及构建验证历史，不代表当前在板版本或最新校准状态。2026-11-02的正向定位、图标重叠修复、局部6+5点与相机点击结果见[PC指针验收](../../backend/doc/pointer-response-validation.md)；真实restart API交接见[服务管理](../../backend/doc/service-management.md)。全屏及微信最新回归未因这次局部点击通过而自动视为通过。
+
 ## 独立构建安装验证（2026-10-31）
 
 在父工作区之外创建不含工具链、构建目录或依赖缓存的独立克隆，覆盖本轮构建脚本后，从官方源安装 Arduino CLI 1.5.1、ESP32 core 3.3.12、NimBLE-Arduino 2.3.8。初次安装在 PowerShell 7 执行；后续实际编译和缓存验证在 Windows PowerShell 5.1 执行。未复制父目录工具链或全局 Arduino 库。

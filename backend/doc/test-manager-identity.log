@@ -1,0 +1,15 @@
+test_authenticated_identity_must_match_registered_process (test_manager_recovery.RecoveryTests.test_authenticated_identity_must_match_registered_process) ... ok
+test_pid_reuse_rejected (test_manager_recovery.RecoveryTests.test_pid_reuse_rejected) ... ok
+test_timeout_with_occupied_port_never_spawns (test_manager_recovery.RecoveryTests.test_timeout_with_occupied_port_never_spawns) ... ok
+test_unknown_existing_api_is_not_replaced (test_manager_recovery.RecoveryTests.test_unknown_existing_api_is_not_replaced) ... ok
+test_unproven_adopted_exit_not_restarted (test_manager_recovery.RecoveryTests.test_unproven_adopted_exit_not_restarted) ... ok
+test_venv_descendant_identity_and_clean_launcher_exit (test_manager_recovery.RecoveryTests.test_venv_descendant_identity_and_clean_launcher_exit) ... ok
+test_windows_absent_listener_timeout_checks_bind_before_spawn (test_manager_recovery.RecoveryTests.test_windows_absent_listener_timeout_checks_bind_before_spawn) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.072s
+
+OK
+TEST_EXIT=0
+{"api_pid": 55340, "manager_pid": 33328, "capture_pid": 53584, "restart_verified": true}
+RESTART_EXIT=0

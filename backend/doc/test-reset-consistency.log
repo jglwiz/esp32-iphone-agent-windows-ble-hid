@@ -1,0 +1,101 @@
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_completion_cannot_turn_a_live_snapshot_into_interruption (test_device_reset.ResetTests.test_completion_cannot_turn_a_live_snapshot_into_interruption) ... ok
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.112s
+
+OK
+TARGET_EXIT=0
+REPEAT=1
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.635s
+
+OK
+REPEAT=2
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.630s
+
+OK
+REPEAT=3
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.630s
+
+OK
+REPEAT=4
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.618s
+
+OK
+REPEAT=5
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.649s
+
+OK
+REPEAT=6
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.643s
+
+OK
+REPEAT=7
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.625s
+
+OK
+REPEAT=8
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.622s
+
+OK
+REPEAT=9
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.613s
+
+OK
+REPEAT=10
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_reset_and_repeated_id (test_device_reset.ResetTests.test_reset_and_repeated_id) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.623s
+
+OK
+REPEATS_OK

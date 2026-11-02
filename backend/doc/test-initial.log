@@ -1,0 +1,1213 @@
+Obtaining file:///D:/codespace/esp32-iphone-agent/esp32-iphone-agent-windows-ble-hid/backend
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: iphone-backend
+  Building editable for iphone-backend (pyproject.toml): started
+  Building editable for iphone-backend (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+
+  × Building editable for iphone-backend (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [11 lines of output]
+      running editable_wheel
+      creating D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info
+      writing D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info\PKG-INFO
+      writing dependency_links to D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info\dependency_links.txt
+      writing requirements to D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info\requires.txt
+      writing top-level names to D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info\top_level.txt
+      writing manifest file 'D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info\SOURCES.txt'
+      reading manifest file 'D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info\SOURCES.txt'
+      writing manifest file 'D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend.egg-info\SOURCES.txt'
+      creating 'D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.test-tmp\pip-ephem-wheel-cache-wl7zlxye\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\tmphjdtuztq\.tmp-t79cia_7\iphone_backend-0.1.0.dist-info'
+      error: [('D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\.test-tmp\\pip-ephem-wheel-cache-wl7zlxye\\wheels\\c4\\07\\4a\\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\\tmphjdtuztq\\.tmp-t79cia_7\\iphone_backend.egg-info\\dependency_links.txt', 'D:\\codespace\\esp32-iphone-agent\\esp32-iphone-agent-windows-ble-hid\\backend\\.test-tmp\\pip-ephem-wheel-cache-wl7zlxye\\wheels\\c4\\07\\4a\\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\\tmphjdtuztq\\.tmp-t79cia_7\\iphone_backend-0.1.0.dist-info\\dependency_links.txt', "[Errno 2] No such file or directory: 'D:\\\\codespace\\\\esp32-iphone-agent\\\\esp32-iphone-agent-windows-ble-hid\\\\backend\\\\.test-tmp\\\\pip-ephem-wheel-cache-wl7zlxye\\\\wheels\\\\c4\\\\07\\\\4a\\\\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1\\\\tmphjdtuztq\\\\.tmp-t79cia_7\\\\iphone_backend-0.1.0.dist-info\\\\dependency_links.txt'")]
+      [end of output]
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building editable for iphone-backend
+Failed to build iphone-backend
+error: failed-wheel-build-for-install
+
+× Failed to build installable wheels for some pyproject.toml based projects
+╰─> iphone-backend
+PIP_EXIT=1
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+{"event": "ready", "pid": 11, "instance_id": "a"}
+{"event": "health_failed", "pid": 11, "error": "fault"}
+{"event": "ready", "pid": 11, "instance_id": "a"}
+{"event": "ready", "pid": 12, "instance_id": "b"}
+EEE.......EEEEEEEE............E................EEEEEEEEEEEEEEEEEEEE.s.........EEEEEEEEEE.................EEE
+======================================================================
+ERROR: test_failed_absolute_prevents_later_click_and_releases (test_absolute_pointer.AbsoluteTests.test_failed_absolute_prevents_later_click_and_releases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_absolute_pointer.py", line 76, in test_failed_absolute_prevents_later_click_and_releases
+    with tempfile.TemporaryDirectory() as d, patch('service.run_absolute',return_value={
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_service_absolute_is_single_owner_and_deduplicated (test_absolute_pointer.AbsoluteTests.test_service_absolute_is_single_owner_and_deduplicated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_absolute_pointer.py", line 52, in test_service_absolute_is_single_owner_and_deduplicated
+    with tempfile.TemporaryDirectory() as d, patch('service.run_absolute',side_effect=controller):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_stalled_pointer_stops_before_click (test_absolute_pointer.AbsoluteTests.test_stalled_pointer_stops_before_click)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_absolute_pointer.py", line 28, in test_stalled_pointer_stops_before_click
+    with tempfile.TemporaryDirectory() as d, patch('absolute_pointer.locate', return_value=position):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'absolute_pointer'
+
+======================================================================
+ERROR: test_idempotence_cancel_and_exclusive (test_calibration_http.CalibrationHttpTests.test_idempotence_cancel_and_exclusive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_bias_correction_on_holdout (test_calibration_job.CalibrationJobTests.test_bias_correction_on_holdout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_cancel_prevents_later_clicks (test_calibration_job.CalibrationJobTests.test_cancel_prevents_later_clicks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_complete_and_release_before_publish (test_calibration_job.CalibrationJobTests.test_complete_and_release_before_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_evidence_failure_fails_closed (test_calibration_job.CalibrationJobTests.test_evidence_failure_fails_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_geometry_change_before_click_rejected (test_calibration_job.CalibrationJobTests.test_geometry_change_before_click_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_profile_commit_failure_keeps_old_profile (test_calibration_job.CalibrationJobTests.test_profile_commit_failure_keeps_old_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_release_failure_does_not_publish (test_calibration_job.CalibrationJobTests.test_release_failure_does_not_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1831, in _inner
+    return f(*args, **kw)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1375, in patched
+    with self.decoration_helper(patched,
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1357, in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\contextlib.py", line 517, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'calibration_jobs'
+
+======================================================================
+ERROR: test_settle_boundary_rejects_transition_frames_and_accepts_equality (test_frame_capture.CaptureTests.test_settle_boundary_rejects_transition_frames_and_accepts_equality)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_frame_capture.py", line 120, in test_settle_boundary_rejects_transition_frames_and_accepts_equality
+    asyncio.run(run())
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_frame_capture.py", line 114, in run
+    with patch('frame_capture.time.time', return_value=100.1):
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'frame_capture'
+
+======================================================================
+ERROR: test_changed_source_invalidates_profile (test_native_service.NativeServiceTests.test_changed_source_invalidates_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_click_outside_measured_region (test_native_service.NativeServiceTests.test_click_outside_measured_region)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_diagnostic_click_cannot_bypass_verification (test_native_service.NativeServiceTests.test_diagnostic_click_cannot_bypass_verification)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_diagnostic_move_with_unverified_legacy_profile (test_native_service.NativeServiceTests.test_diagnostic_move_with_unverified_legacy_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_diagnostic_move_without_profile (test_native_service.NativeServiceTests.test_diagnostic_move_without_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_diagnostic_new_source_ignores_saved_mapping (test_native_service.NativeServiceTests.test_diagnostic_new_source_ignores_saved_mapping)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_diagnostic_rejects_mixed_buttons_before_any_input (test_native_service.NativeServiceTests.test_diagnostic_rejects_mixed_buttons_before_any_input)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_diagnostic_rejects_old_frame_with_saved_profile (test_native_service.NativeServiceTests.test_diagnostic_rejects_old_frame_with_saved_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_entire_batch_rejected_before_input (test_native_service.NativeServiceTests.test_entire_batch_rejected_before_input)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_fault_invalidates_profile (test_native_service.NativeServiceTests.test_fault_invalidates_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_frame_sequence_regression_invalidates (test_native_service.NativeServiceTests.test_frame_sequence_regression_invalidates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_future_timestamp_rejected (test_native_service.NativeServiceTests.test_future_timestamp_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_geometry_required_even_without_capture (test_native_service.NativeServiceTests.test_geometry_required_even_without_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_guard_failure_blocks_click_and_invalidates_profile (test_native_service.NativeServiceTests.test_guard_failure_blocks_click_and_invalidates_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_manual_visual_move_cannot_click (test_native_service.NativeServiceTests.test_manual_visual_move_cannot_click)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_old_final_frame_does_not_repeat_input (test_native_service.NativeServiceTests.test_old_final_frame_does_not_repeat_input)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_single_move_and_dedup (test_native_service.NativeServiceTests.test_single_move_and_dedup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_startup_diagnostics_are_read_once_by_serial_owner (test_native_service.NativeServiceTests.test_startup_diagnostics_are_read_once_by_serial_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_static_old_frame_is_geometry_only (test_native_service.NativeServiceTests.test_static_old_frame_is_geometry_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_verified_move_returns_evidence_without_waiting_for_static_frame (test_native_service.NativeServiceTests.test_verified_move_returns_evidence_without_waiting_for_static_frame)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_native_service.py", line 21, in setUp
+    self.guard_patch=patch("service.verify_pointer_response",side_effect=verified);self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_error_plus_uncertainty_is_bound (test_scope.ScopeTests.test_error_plus_uncertainty_is_bound)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_expired_review_cannot_publish (test_scope.ScopeTests.test_expired_review_cannot_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_fixed_mapping_can_be_reverified_after_restart (test_scope.ScopeTests.test_fixed_mapping_can_be_reverified_after_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_fixed_scope_and_approval (test_scope.ScopeTests.test_fixed_scope_and_approval)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_guard_failure_stops_without_fitting_or_publication (test_scope.ScopeTests.test_guard_failure_stops_without_fitting_or_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_scene_change_requires_explicit_review (test_scope.ScopeTests.test_scene_change_requires_explicit_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_tampered_image_rejected (test_scope.ScopeTests.test_tampered_image_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_uncertainty_and_generation_rejected (test_scope.ScopeTests.test_uncertainty_and_generation_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_usable_area_is_explicit_and_repeated (test_scope.ScopeTests.test_usable_area_is_explicit_and_repeated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope.py", line 27, in setUp
+    mock=patch('scope.verify_pointer_response',side_effect=check);mock.start();self.addCleanup(mock.stop)
+                                                                  ^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_exclusivity_replay_conflict_and_expiry (test_scope_http.ScopeHttpTests.test_exclusivity_replay_conflict_and_expiry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_scope_http.py", line 17, in test_exclusivity_replay_conflict_and_expiry
+    with patch('scope.ScopeJob.run',sample),patch('scope.ScopeApproval.run',approve),TestClient(create_app(worker)) as client:
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'scope'
+
+======================================================================
+ERROR: test_fullscreen_grid (test_visual_calibration.VisualCalibrationTests.test_fullscreen_grid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_visual_calibration.py", line 19, in setUp
+    self.guard_patch=patch("iphone_backend.service.verify_pointer_response",return_value={"state":"passed","version":1});self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_review_evidence_and_native_click (test_visual_calibration.VisualCalibrationTests.test_review_evidence_and_native_click)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_visual_calibration.py", line 19, in setUp
+    self.guard_patch=patch("iphone_backend.service.verify_pointer_response",return_value={"state":"passed","version":1});self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+======================================================================
+ERROR: test_signed_fit_and_uncertainty (test_visual_calibration.VisualCalibrationTests.test_signed_fit_and_uncertainty)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\tests\test_visual_calibration.py", line 19, in setUp
+    self.guard_patch=patch("iphone_backend.service.verify_pointer_response",return_value={"state":"passed","version":1});self.guard_patch.start();self.addCleanup(self.guard_patch.stop)
+                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+             ^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\unittest\mock.py", line 1430, in __enter__
+    self.target = self.getter()
+                  ^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\pkgutil.py", line 700, in resolve_name
+    mod = importlib.import_module(modname)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'service'
+
+----------------------------------------------------------------------
+Ran 108 tests in 29.940s
+
+FAILED (errors=45, skipped=1)
+TEST_EXIT=1
+MANIFEST_TOTAL=39 BAD=0
+
+RERUN after mock target updates
+D:\Users\J\miniconda3\envs\esp32-iphone-agent\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+{"event": "ready", "pid": 11, "instance_id": "a"}
+{"event": "health_failed", "pid": 11, "error": "fault"}
+{"event": "ready", "pid": 11, "instance_id": "a"}
+{"event": "ready", "pid": 12, "instance_id": "b"}
+....................................................................s.......................................
+----------------------------------------------------------------------
+Ran 108 tests in 45.129s
+
+OK (skipped=1)
+RERUN_EXIT=0
+PIP RETRY with backend/.tmp
+Obtaining file:///D:/codespace/esp32-iphone-agent/esp32-iphone-agent-windows-ble-hid/backend
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: iphone-backend
+  Building editable for iphone-backend (pyproject.toml): started
+  Building editable for iphone-backend (pyproject.toml): finished with status 'done'
+  Created wheel for iphone-backend: filename=iphone_backend-0.1.0-0.editable-py3-none-any.whl size=1401 sha256=96e96b6518ed61bf42cf9fbc0b453f4ba8da210e6cb9b87aa8252b674a5a3b3c
+  Stored in directory: D:\codespace\esp32-iphone-agent\esp32-iphone-agent-windows-ble-hid\backend\.tmp\pip-ephem-wheel-cache-dpal12dd\wheels\c4\07\4a\dc80027ffcbb893e21ab94514bbd24cbca7ea70073b5488ca1
+Successfully built iphone-backend
+Installing collected packages: iphone-backend
+Successfully installed iphone-backend-0.1.0
+PIP_RETRY_EXIT=0
+APP_IMPORT_OK
+IMPORT_EXIT=0

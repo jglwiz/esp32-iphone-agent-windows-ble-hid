@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iphone-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["pyserial==3.5", "fastapi==0.162.0", "uvicorn==0.54.0", "pydantic==2.14.1", "httpx==0.28.1", "numpy==2.4.6", "opencv-python==5.0.0.93", "Pillow", "psutil"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+iphone_backend = ["calibration_page/*"]

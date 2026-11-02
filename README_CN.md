@@ -4,7 +4,7 @@
 
 通过 ESP32-S3 BLE HID 和 AirPlay，让 Windows 上的 AI Agent 观察并操作 iPhone。
 
-项目标识：`esp32-iphone-agent-windows-ble-hid`。当前实现提供串口到 BLE 的键鼠控制桥接和 Agent 实机测试；视觉反馈使用另行提供的 AirPlay 取帧服务。
+项目标识：`esp32-iphone-agent-windows-ble-hid`。当前实现提供串口到 BLE 的键鼠控制桥接和 Agent 实机测试；统一 Backend 已包含 AirPlay 取帧和进程管理。
 
 **控制链路：PC → USB 串口 → ESP32-S3 → BLE HID → iPhone。** 板子 USB 接 PC；iPhone 通过蓝牙接收输入。视觉反馈可另接 AirPlay，BLE HID 本身不返回屏幕画面。
 
@@ -40,18 +40,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload 
 
 前提：开发板已刷入本项目固件；iPhone 已配对 `S3-iPhone-HID`，开启辅助触控。固件构建前提见 [使用说明](doc/user/usage.md)。
 
-在项目根目录运行（Python 3.10 或更新版本；已使用 Python 3.11 环境测试）：
+在项目根目录运行（Python 3.11 或更新版本；已使用 Python 3.11 环境测试）：
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r pc\requirements.txt
-.\.venv\Scripts\python.exe pc\bridge.py status
+python -m venv backend/.venv
+.\backend\.venv\Scripts\python.exe -m pip install -e backend
+.\backend\.venv\Scripts\python.exe -m iphone_backend.esp32.serial_transport status
 ```
 
 默认识别唯一 CH343；需要时显式指定端口：
 
 ```powershell
-.\.venv\Scripts\python.exe pc\bridge.py --port COM4 status
+.\backend\.venv\Scripts\python.exe -m iphone_backend.esp32.serial_transport --port COM4 status
 ```
 
 在确认手机输入目标后，按 [操作说明](doc/user/usage.md)执行键鼠动作。`sent` 仅代表本地 BLE 报告提交；必须观察手机验证结果。
@@ -61,7 +61,7 @@ python -m venv .venv
 | 路径 | 内容 |
 | --- | --- |
 | firmware/serial_ble_hid/ | Arduino 固件及 HID 报告描述符 |
-| pc/ | Python 串口 CLI、依赖和可选截图客户端 |
+| backend/ | 统一 API、ESP32/AirPlay 子模块、包、测试与文档 |
 | scripts/ | 固件构建、刷写脚本 |
 | tests/ | 客户端单元测试、实机串口检查与诊断工具 |
 | tests/case1_wechat_send_hello/ | 独立实机用例，包含工具、doc/ 和忽略提交的 runs/ |
@@ -76,19 +76,23 @@ python -m venv .venv
 无需连接硬件的客户端测试：
 
 ```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+.\backend\.venv\Scripts\python.exe -m unittest discover -s backend/tests -v
 ```
 
 实机测试与普通单元测试分开运行。微信用例涉及真实手机操作与消息发送，见 [测试流程](tests/case1_wechat_send_hello/doc/test-case.md)。设计方案及后续工作见 [实施计划](doc/dev/plan.md)。
 
 ## 发布状态
 
-源码已采用 MIT 许可证公开发布，支持独立安装固件依赖与编译。可选的截图服务仍需另行提供。具体事项见 [发布完善待办](doc/dev/plan.md#独立发布前待办)。
+源码已采用 MIT 许可证公开发布，支持独立安装固件依赖与编译。Backend 已包含取帧进程，UxPlay 作为外部运行时通过 UXPLAY_DIR 配置。具体事项见 [发布完善待办](doc/dev/plan.md#独立发布前待办)。
 
 ## 许可证
 
 [MIT](LICENSE)。允许修改、再分发和商业使用，须保留版权及许可声明。第三方依赖仍遵循各自的许可证。
 
-可选的 Python FastAPI 常驻控制服务复用串口会话，将动作结果和 AirPlay 截图合并返回。默认使用视觉相对后端；原生绝对 HID 与自动校准已完成局部实机验证，点击受验证范围约束，全屏与跨应用尚未验收。安装 `pc/requirements-service.txt` 后运行 `python pc/service.py`；服务占用串口时不要并行运行直接串口客户端。详见 [服务说明](pc/doc/service.md)。
+可选的 Python FastAPI 常驻控制服务复用串口会话，将动作结果和 AirPlay 截图合并返回。默认使用视觉相对后端；原生绝对 HID 与自动校准已完成局部实机验证，点击受验证范围约束，全屏与跨应用尚未验收。通过 `python -m pip install -e backend` 安装后运行 `python -m iphone_backend`；服务占用串口时不要并行运行直接串口客户端。详见 [服务说明](backend/doc/service.md)。
 
-固件 **0.3.3** 为当前实测iPhone增加修饰键先行报告：普通HID文本已正确输入`a_A-1`，Ctrl+Space再次显示选中的输入语言，客户端text调用不变。设计与证据见[修饰键时序](firmware/serial_ble_hid/doc/keyboard-modifiers.md)，最新范围与限制见[原生HID验收](pc/doc/native-hid-validation.md)；上文旧版本结果为历史记录。
+固件 **0.3.3** 为当前实测iPhone增加修饰键先行报告：普通HID文本已正确输入`a_A-1`，Ctrl+Space再次显示选中的输入语言，客户端text调用不变。设计与证据见[修饰键时序](firmware/serial_ble_hid/doc/keyboard-modifiers.md)，最新范围与限制见[原生HID验收](backend/doc/native-hid-validation.md)；上文旧版本结果为历史记录。
+
+## 统一后端
+
+按 [Backend 使用说明](backend/doc/usage.md) 配置绝对运行路径，通过 `python -m iphone_backend` 启动。8892 是唯一控制和截图 API；8891/8894 仅供内部使用。主控负责取帧启动和 API 监督，UxPlay 为外部运行时。API 占有设备时不要运行直接串口 CLI。迁移证据见 [实施记录](backend/doc/implementation-status.md)。
