@@ -54,6 +54,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload 
 
 ## 当前边界
 
+0.3.3包含“先按修饰键、再按字符、先松字符、最后松修饰键”的兼容时序，但曾出现同版本失效。2026-11-02恢复原固件后ASCII输入通过，根因仍未确定；不能把连接ready或切到英文键帽当作输入正确的证明，也不将反复刷写当作保证有效的恢复步骤。诊断顺序及证据边界见[修饰键说明](../../firmware/serial_ble_hid/doc/keyboard-modifiers.md)。
+
 本轮完成计划 P1。尚未实现 bond.clear 命令、完整动作队列、Boot Protocol、媒体键、水平滚动及视觉坐标校准。现有 USB HID 校准不能套用。拖动与双向滚轮已通过单轮实机验证；自动重连、完整压力测试与故障恢复矩阵尚未系统验证，不能从首轮成功推断其已通过。
 
 ## 备份与恢复

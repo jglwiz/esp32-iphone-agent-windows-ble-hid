@@ -329,6 +329,8 @@ void advanceAction() {
       // iOS can ignore a modifier that first appears alongside the base key.
       // Establish it separately, press/release the key, then release modifiers.
       // A longer simultaneous key hold does not provide this transition.
+      // Keep all four tap phases: modifier -> modifier+key -> modifier -> neutral.
+      // See doc/keyboard-modifiers.md and the shift_a_staged.json regression fixture.
       if (action.phase < 3) keys[0] = action.modifiers;
       if (action.phase == 1) keys[2] = action.usage;
       done = action.op == "keyboard.down" ? action.phase == 1 : action.phase == 3;

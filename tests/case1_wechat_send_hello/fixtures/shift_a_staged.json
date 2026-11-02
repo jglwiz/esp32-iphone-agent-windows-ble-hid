@@ -1,0 +1,15 @@
+{
+  "steps": [
+    {"op": "text", "text": "1"},
+    {"op": "key_down", "usage": 0, "modifiers": 2},
+    {"op": "wait", "seconds": 0.2},
+    {"op": "key_down", "usage": 4, "modifiers": 2},
+    {"op": "wait", "seconds": 0.1},
+    {"op": "key_down", "usage": 0, "modifiers": 2},
+    {"op": "wait", "seconds": 0.1},
+    {"op": "key_up"}
+  ],
+  "capture": true,
+  "settle_ms": 1500,
+  "timeout_seconds": 20
+}
