@@ -34,6 +34,5 @@ htmlcov/
 *.p12
 *.pfx
 
-# Local task work
-tasks/
+# Local task work (consolidated under task/)
 /task/
