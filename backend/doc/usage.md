@@ -1,5 +1,17 @@
 # 新 Backend 使用说明
 
+## 绝对定位与迁移状态
+
+2026-11-03 已部署固件 0.4.2、guard v9；143 项后端测试通过，固件沿用先前 3 项布局测试及构建/刷写/读回校验。九点校准、五点留出、三轮复位重连及 36 点范围复验完成；verified_region 为 [24,60,471,1010]，另验证四边中点。四角实际内缩未通过，物理旋转和长期稳定性未测。静止截图 observation_only 不等于效果确认。详见 [验收与边界](direction-root-cause.md)。
+
+- 业务接口仅接受 `native_hid`，`move_to` / `click_at` 使用截图整数坐标；视觉用于核对，不再相对步进纠偏。
+- 删除 `move`、`tap`、`drag`、dx/dy、`visual_relative` 请求及 CLI 相对移动；Bridge 和固件均拒绝 `mouse.move`。没有相对诊断或兜底入口。
+- 保留原地 `click`、滚轮和键盘。滚轮只滚动内容，Report 2 的 X/Y 固定为零；保留已有报告布局以避免本轮额外改变配对描述符。
+- 校准全程使用绝对指令。校准文件在 `IPHONE_RUNTIME_DIR/service/calibration-profile.json`；历史文件不会自动变成当前连接已验证。位移方向异常、重复坐标不响应等可靠性问题不能通过改参数掩盖。
+- 旧环境设置 `BLE_HID_COORDINATE_BACKEND=visual_relative` 仅在启动时告警并归一为 `native_hid`；新配置写 `native_hid`。旧客户端请求相对动作会在输入前拒绝。
+
+后续先验证 API 拒绝旧动作、默认原生定位、无效校准停止且无兜底、按钮释放与请求去重，再执行绝对校准、同点重复、重连、方向变化及实际点击回归。不要把本次改代码记为测试通过。原因与实机证据见 [踩坑记录](direction-root-cause.md)。
+
 ## 安装与启动
 
 全新电脑请先按 [首次部署流程](../../doc/user/deployment.md) 使用 `scripts/setup.ps1` 创建环境与配置，再通过 `deploy.py start` 启动。下面的 prepare/handover 是历史迁移流程，不是首次安装要求。`bootstrap.py check` 提供不发送输入的部署验收。
@@ -14,7 +26,7 @@
 
 | 接口 | 行为 |
 |---|---|
-| POST /action | 现有动作请求与结果格式，支持点击、滑动、键盘及可选结果截图 |
+| POST /action | 现有动作请求与结果格式，支持原生绝对定位、原地点击、滚轮、键盘及可选结果截图 |
 | GET /frame | 最新 JPEG；保留 X-Frame-Id、X-Frame-Time，204 表示无帧 |
 | GET /screen/status | 可达性、年龄、新鲜度；静止/卡住无法区分时返回 stale_or_unknown |
 | POST /screen/start | 认证；request_id 去重，启动或复用取帧，202 后查询任务 |
@@ -53,3 +65,9 @@ result = click('.runtime/click.jpg')
 本机更新主控代码或部署配置后，使用 `backend/.venv/Scripts/python.exe backend/tools/deploy.py restart-manager`。该工具要求主控/API 空闲就绪，并核对认证身份与持久登记，只替换主控自身，保留 API、串口、取帧和 UxPlay；身份不符时停止。输出证据位于 backend/.runtime/deployment/manager-reload.json。此操作与 `/admin/restart`（只更新 API）分开。
 
 取帧换版本可能需要手机重新投屏。API 普通重启应保持取帧与 UxPlay PID 不变。源码清理必须等完整验收及运行实例切换后进行。
+
+## 有界实机回归
+
+独占手机操作时，在仓库根用 `backend/.venv/Scripts/python.exe backend/tools/reliability_soak.py --output .runtime/soak-unique --rounds 3 --idle-seconds 60 --reset-between-rounds` 复现。必须从 verified profile 开始，输出目录必须是新的；每轮静止等待后测试 12 个绝对目标，包含同点重复、近角和四边中点。工具不点击或输入文本，失败立即停止，重连结果未知不再次提交复位。截图、请求、绑定、耗时及错误都保存在输出目录。
+
+复位后旧 profile 失效，后续无按钮采样明确使用 diagnostic_uncalibrated；工具不把诊断成功写成正式校准。结束需通过 `/scope-validations` 和逐图审核恢复 verified 状态。当前四个最外角未支持，轮数和时长有限的成功不能代替长期稳定性保证。

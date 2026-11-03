@@ -2,13 +2,13 @@
 
 # 常驻串口控制服务
 
-[原生绝对 HID 与自动校准集成计划](native-hid-integration-plan.md) 已部分实施；全屏、跨应用与性能验收尚未完成，默认仍为视觉后端。
+[原生绝对 HID 与自动校准集成计划](native-hid-integration-plan.md) 已部分实施；全屏、跨应用与性能验收尚未完成，当前源码仅保留原生绝对后端；2026-11-03 移除相对定位的修改尚待测试与部署。
 
 ## 原生绝对 HID（局部验证）
 
-正式固件 0.3.0 增加独立绝对报告。`coordinate_backend="native_hid"` 可显式选择；默认 `visual_relative` 保持不变。原生动作在单串口 worker 内提交，不进行视觉纠偏；每次预检仍读取一张近期 snapshot v1 检查截图几何，即使 `capture=false` 也不跳过。`report_submitted` / `click_submitted` 只代表提交，业务效果须另外核验。请求前预检失败返回 `not_started`；输入结果未知时不得自动重放。
+正式固件 0.3.0 增加独立绝对报告。`coordinate_backend="native_hid"` 是唯一后端。原生动作在单串口 worker 内提交，不进行视觉纠偏；每次预检仍读取一张近期 snapshot v1 检查截图几何，即使 `capture=false` 也不跳过。`report_submitted` / `click_submitted` 只代表提交，业务效果须另外核验。请求前预检失败返回 `not_started`；输入结果未知时不得自动重放。
 
-启动前需设置 `BLE_HID_DEVICE_ID`（固件 status 返回的稳定设备 ID）、`BLE_HID_PHONE_ID`（明确绑定的手机标识）和 `BLE_HID_CALIBRATION_HOST`（手机可访问的本机地址）；可选 `BLE_HID_CALIBRATION_PORT`（默认 8893）和 `BLE_HID_COORDINATE_BACKEND`（默认 `visual_relative`）。控制 API 只监听本机；校准页接收器独立监听局域网、只服务令牌页面与事件，不暴露控制路由。不要将令牌网址分享给其他人。确保指定端口空闲；服务不修改防火墙。
+启动前需设置 `BLE_HID_DEVICE_ID`（固件 status 返回的稳定设备 ID）、`BLE_HID_PHONE_ID`（明确绑定的手机标识）和 `BLE_HID_CALIBRATION_HOST`（手机可访问的本机地址）；可选 `BLE_HID_CALIBRATION_PORT`（默认 8893）和 `BLE_HID_COORDINATE_BACKEND`（仅 `native_hid`）。控制 API 只监听本机；校准页接收器独立监听局域网、只服务令牌页面与事件，不暴露控制路由。不要将令牌网址分享给其他人。确保指定端口空闲；服务不修改防火墙。
 
 使用 `service_client.start_calibration(request_id, "calibrate")` 创建异步任务，打开结果中的 `page_url`，用 `get_calibration(job_id)` 查看阶段，用 `cancel_calibration(job_id)` 取消。`verify` 用于重启或断连后的既有配置复验。页面和待测目标通过随机会话、探针和确认关联，必须收到完整 down/up/click 链；失败不重试。校准的候选证据先保存为 `validation_passed` / `not_committed`，`calibration-profile.json` 原子替换是唯一激活提交点。重启后配置为 `needs_verification`。任务采样期间普通动作返回冲突；等待打开页面期间仍可导航。
 
@@ -16,21 +16,13 @@
 
 2026-10-31 实机：正式局部校准完成 6 训练、5 留出和 5 验证点击；主代理审计 16 组完整事件。重启后 `needs_verification` 门禁拒绝点击，复验 10 次通过；范围外点击和等待页取消均无输入。当前验证范围仅 `[186,455,310,651]` 截图像素，不能用于主屏和微信全流程。范围内 click_at 的同 ID 重试只产生一次绝对点击命令和三份报告；最终截图显示指针，但该测试页面接收器已关闭，不能据此声称页面收到点击。全屏、跨应用、断连、三轮同条件性能及正式原生微信尚未验收。
 
-## 视觉相对后端
+## 唯一定位路径
 
-`POST /action` 的 steps 新增 `move_to`、`click_at`，必须提供 `x`、`y`，单位为当前 496×1080 AirPlay 截图像素（x=0..495、y=0..1079）。示例：`{"op":"move_to","x":250,"y":540}`；`{"op":"click_at","x":459,"y":578}`。旧 `move`/`tap` 仍使用相对 HID 单位。
+`move_to`、`click_at` 使用原生绝对 HID，必须提供当前 496×1080 截图整数坐标 x=0..495、y=0..1079。视觉仅验证实际响应，不再通过相对步进修正位置。`move`、`tap`、`drag`、dx/dy 和 `visual_relative` 请求已移除，验证阶段拒绝整份请求，不会先执行前面的点击。滚轮 `scroll`、原地 `click` 和键盘保持独立。
 
-算法位于 `backend/src/iphone_backend/absolute_pointer.py`、`backend/src/iphone_backend/pointer_vision.py`，正式服务不依赖 task/lab。整个视觉循环在单一串口队列任务中运行，不递归调用 HTTP，不允许与其他请求交错。每次启动重新定位，必要时有限换方向探测和重建参考；建议先 move_to(250,540) 验证居中，但不能靠未知相对位移假定已到中央。动作中始终释放按钮，不支持与 key_down/mouse_down 同请求组合。
+旧部署环境变量 `BLE_HID_COORDINATE_BACKEND=visual_relative` 在启动时记录警告并归一为 `native_hid`，不能重新启用相对实现。更新配置时改为 `native_hid`；请求显式传入旧后端则直接拒绝。未校准、能力不可用或定位失败时停止，不回退。
 
-按距离分配最多16次移动；连续两次实际位移小于1.5 px时返回 no_progress，阻止点击和后续步骤。误差≤6 px才到位；click_at再次读取快照检查位置及参考图，然后单次左键点击。无输入复查允许使用最近5秒内的已有v1快照（静止屏幕可能不产新帧），不能把两次读取同一frame_id称为两帧独立证据；真实移动仍要求动作等待之后的帧。页面变化、截图失败、取消、截止时间、未知位置均停止，不自动重放。视觉循环即使capture=false也必须取帧；该选项只控制最终返回图。整体沿用请求截止时间，绝对动作建议 timeout_seconds=45，不在一个请求里塞入许多跨页目标。
-
-返回 `absolute` 数组包含每步定位轨迹、状态、内部请求数和 evidence_directory；其 requests 是内部动作/截图轮数，不是 HTTP 请求数。中间图片和元数据保存在 `.runtime/service/absolute/`。失败时保留 partial_unknown 和 released；HTTP 200 本身不代表动作成功。click_submitted也不代表 UI 已命中，仍需检查返回画面。capture_error只表示最终截图失败，不重新点击。
-
-当前支持当前截图尺寸及约14 px半径指针；极限圆角可能不可达，不能保证任意坐标。旧参考图不跨页面复用。点击前检查与真正点击仍有时间间隔，不保证动态页面原子命中。固件不变。
-
-整合实机验收（2026-10-31）：同一 6.1 Terra / Medium 子代理通过正式接口先居中，再完成微信文件传输助手测试，主代理看图通过；消息 `test_20261031_104014_b3e5` 单次发送。耗时274.258秒，19次HTTP、39轮内部绝对定位动作/取帧；旧相对服务成功轮119.455秒，本轮没有提速。包含一次定位门禁失败后居中恢复及75.191秒诊断协调间隔，不作严格同条件性能结论。28项自动化测试通过，静止复查修正后4项绝对动作回归测试再次通过。完整证据见 `tests/case1_wechat_send_hello/runs/20261031_104014_b3e5/evaluation.md`。
-
-本服务保留现有固件协议，在 PC 上复用单一串口会话，并将动作、界面等待、新鲜截图合并到一个 HTTP 请求。模型不再为每次操作启动串口客户端、握手、关闭端口，再单独请求截图。API 监听 `127.0.0.1:8892`；现有 AirPlay 取帧仍使用 8891，旧 USB 后端 8890 不参与。
+自动事件校准、视觉采样和独立留出点均通过绝对报告移动；校准只能修正稳定的小偏差，不能替代同点重复、重连、方向变化与点击效果验证。历史相对实现及对应旧实现测试已删除；历史实机报告仅作证据，不代表当前 API。设计原因见 [方向与状态调查](direction-root-cause.md)。
 
 ## 运行
 
@@ -53,16 +45,16 @@ python -m iphone_backend
 ```json
 {
   "request_id": "unique-id",
-  "steps": [{"op":"tap","dx":20,"dy":-10}],
+  "steps": [{"op":"move_to","x":250,"y":540}],
   "capture": true,
   "settle_ms": 700,
   "timeout_seconds": 20
 }
 ```
 
-步骤支持 move、click、tap（相对移动后点击）、drag（当前位置按住并相对拖动）、scroll、text、key、key_down/key_up、mouse_down/mouse_up、wait。dx/dy 为 HID 相对单位，不是截图像素；tap 的 dx/dy 仍为相对单位；绝对目标须用 move_to/click_at 的 x/y。按钮编号 1–3；按键 usage、modifiers 与现有串口客户端一致。
+步骤支持 move_to、click_at、click、scroll、text、key、key_down/key_up、mouse_down/mouse_up、wait。定位只用 x/y 截图像素；不接受 dx/dy。原地按钮编号 1–3，原生坐标点击仅主按钮。
 
-所有步骤先整体校验再执行。每次最多32步、256个可打印ASCII字符；text不含回车，发送消息必须显式提供 Enter 操作。临时按住只允许在同一请求内组合，整个请求结束或失败都释放输入，不支持跨HTTP请求维持按键。可把移动、按下、拖动、释放作为一次请求提交，但跨页面仍需先看结果。
+所有步骤先整体校验再执行。每次最多32步、256个可打印ASCII字符；text不含回车，发送消息必须显式提供 Enter 操作。临时按住只允许在同一请求内组合，整个请求结束或失败都释放输入，不支持跨HTTP请求维持按键。原生定位不能与按住输入混合；跨页面先看结果，本轮不提供拖拽替代 API。
 
 `service_client.act(steps, output)` 调用服务并将返回的 JPEG 保存为 output，同时写入 `.json`（兼容 live_case.py）、`.request.json`、`.result.json`。客户端不访问串口，不自动重试。Agent 应在同一次工具调用里执行 act 并用 view_image 展示 output，避免操作与看图拆成两轮。
 
@@ -70,16 +62,16 @@ python -m iphone_backend
 
 ```python
 from iphone_backend.service_client import act
-result = act([{"op": "tap", "dx": 20, "dy": -10}], "run/after.jpg")
+result = act([{"op": "move_to", "x": 250, "y": 540}], "run/after.jpg")
 # text不自动提交
 result = act([{"op": "text", "text": "hello"}], "run/draft.jpg")
 ```
 
-steps=[] 为只观察；静止页面超过5秒无新帧时可能报截图过期，需要明确的小幅移动再观察。服务不会偷偷移动指针或重做输入以刷新截图。输入后默认等待700ms，只接受晚于等待结束时间的新帧；等待最多2.5秒，截图失败时仍保留 input_state=reports_sent，绝不将其等同于输入失败并重放。
+steps=[] 为只观察；静止页面超过5秒无新帧时可能报截图过期，先只读观察；需要移动时明确选择另一个绝对目标并审图，不用相对位移唤醒。服务不会偷偷移动指针或重做输入以刷新截图。输入后默认等待700ms，只接受晚于等待结束时间的新帧；等待最多2.5秒，截图失败时仍保留 input_state=reports_sent，绝不将其等同于输入失败并重放。
 
 ## 执行与故障语义
 
-专用线程拥有全部 Bridge 读写；HTTP层不直接接触串口。队列最多8项，超限429。等待队列时间计入请求截止时间；过期任务不开始输入。空闲每约0.4秒心跳，正常动作按现有固件节奏执行，长移动拆分为最多64单位以缩短取消响应。
+专用线程拥有全部 Bridge 读写；HTTP层不直接接触串口。队列最多8项，超限429。等待队列时间计入请求截止时间；过期任务不开始输入。空闲每约0.4秒心跳，正常动作按固件节奏执行，绝对动作在串口请求边界响应取消。
 
 客户端断开、显式 `POST /cancel/{request_id}`、截止时间或服务退出都会请求取消；在串口请求边界检查，不承诺中断已提交的BLE报告。单次串口等待最长3秒；固件自身2秒租约仍作为异常兜底。每个动作结束强制 release_all，避免常驻心跳维持遗留按下状态。
 
@@ -87,7 +79,7 @@ steps=[] 为只观察；静止页面超过5秒无新帧时可能报截图过期�
 
 返回 input_state、completed_steps、released、时间戳与 frame。partial_unknown 表示可能执行部分动作；capture_error 单独描述截图失败。reports_sent只说明报告提交，不表示手机效果通过。日志保存在项目 `.runtime/service/serial.jsonl` 和 actions.jsonl；含输入文字和截图，仅本地保存。
 
-增量结构保留上述全部旧字段：action.state 与 input_state 一致；release.state 为 released 或 unknown；capture.state 为 available、stale_or_unknown、unavailable、cancelled、invalid 或 skipped。capture=false、动作或释放失败时为 skipped；取帧失败继续返回 capture_error，无成功 frame。frame 内保留 jpeg_base64、frame_time、age_seconds，新增 frame_id、snapshot_version、received_at、after_action 和有动作时的 settled_at。JPEG 不在 capture 内重复存储。after_action 只说明时间关系，不证明手机上的业务成功。
+增量结构保留上述全部旧字段：action.state 与 input_state 一致；release.state 为 released 或 unknown；capture.state 为 available、observation_only、stale_or_unknown、unavailable、cancelled、invalid 或 skipped。capture=false、动作或释放失败时为 skipped；取帧失败继续返回 capture_error，无成功 frame。frame 内保留 jpeg_base64、frame_time、age_seconds，新增 frame_id、snapshot_version、received_at、after_action 和有动作时的 settled_at。JPEG 不在 capture 内重复存储。after_action 只说明时间关系，不证明手机上的业务成功。
 
 当前 airplay/frames.py 使用异步 HTTP。固定编排线程调用取帧，串口 actor 独立心跳，不为每次截图创建线程。读取总预算取请求剩余时间与 2.5 秒的较小值，单次读取最多 0.7 秒，正文最多 8 MiB。完整任务独占输入但允许独立 GET /frame；取消、超时和截图失败不重放输入。线程职责见 architecture.md。
 
@@ -150,7 +142,7 @@ steps=[] 为只观察；静止页面超过5秒无新帧时可能报截图过期�
 
 这是一项保守的静态界面视觉检查，不是iOS触点回读；动画、图标吸附、裁切和指针形态变化可能导致拒绝。它会增加动作耗时。顶部70px忽略状态栏变化，但保留本段被测指针周围的30px邻域，允许上边缘接受与其他点相同的证据检查。需要先在主屏验收，再扩大适用界面，不能称为任意页面通用。
 
-`click_at` 只有在目标连续响应检查通过、连接身份再次核对一致后才提交原生点击；所有尝试保存 `.runtime/service/pointer-checks/<id>/` 原始连续帧及result.json。失败会将内存profile标为needs_verification并增加代次，随后点击被阻止。服务重启同样不会自动信任旧profile。返回trace含pointer_check证据目录；审核校准只接受已通过此检查的本实例诊断动作。旧相对通道不在此门禁的覆盖范围内。
+`click_at` 只有在目标连续响应检查通过、连接身份再次核对一致后才提交原生点击；所有尝试保存 `.runtime/service/pointer-checks/<id>/` 原始连续帧及result.json。失败会将内存profile标为needs_verification并增加代次，随后点击被阻止。服务重启同样不会自动信任旧profile。返回trace含pointer_check证据目录；审核校准只接受已通过此检查的本实例诊断动作。旧相对通道现已移除。
 
 时间戳仍是PC接收时间，不宣称已取得手机源PTS。三点画面挑战提供可观测响应证据，不把接收时间直接等同于动作因果。已有正向校准与点击成功记录是历史结果；新版实机验收另行记录。
 
@@ -192,4 +184,8 @@ verified_region记录独立验证矩形，已经取消用该矩形拒绝区域�
 
 用户要求点击不受图标遮挡、光标闪烁等自动识别误判阻塞。`service_client.act`新增`manual_visual=True`，必须同时指定`coordinate_backend="native_hid"`、`diagnostic_uncalibrated=True`、`capture=True`且只有一个`move_to`或带复核依据的`click_at`步骤。该模式使用正向identity诊断移动，返回动作后截图和`pointer_check.state=manual_review_required`，不声称自动验证或校准通过。设备身份、连接、几何和屏幕边界仍检查。调用者必须查看新图、确认实际位置后，另发同坐标的manual_visual click_at，并提供reviewed_action_id指向已查看的移动请求。服务校验该移动同实例、同连接、同图源、目标一致、已释放、截图不超过120秒，再发送abs.click。无复核ID、关闭截图或混合步骤拒绝。
 
-自动校准和默认move_to/click_at继续使用原有guard。人工移动证据不可用于正式视觉校准审批，因为它没有passed连续响应证据。移动请求不自动点击；独立复核点击不自动重试，也不静默把旧profile改成verified。人工点击必须走原生abs.click，不混用相对mouse.click。
+自动校准和默认move_to/click_at继续使用原有guard。人工移动证据不可用于正式视觉校准审批，因为它没有passed连续响应证据。移动请求不自动点击；独立复核点击不自动重试，也不静默把旧profile改成verified。人工点击必须走原生abs.click，原地 mouse.click 是独立按钮报告，不属于相对定位。
+
+2026-11-03 静止截图修正：当严格等待未取得 settle 之后的新帧，但存在输入完成后收到、年龄不超过 5 秒的有效 v1 图，返回 observation_only 和原始时间，frame.after_action=false、effect_verified=false。它只提供观察证据，不确认业务效果，不触发重放；没有合格观察图仍返回 capture_error。guard v9 对新连接首报告未响应最多更换一次绝对基准点，重复按钮/键盘不在恢复范围内。详情见[多轮验收](direction-root-cause.md)。
+
+动作统计补充：guard 返回 reports_attempted 和 anchor_recovered，trace.reports 包含实际发出的 anchor/probe/target 报告及点击的三个报告，不再将有恢复的动作硬编码为 3/6。manual_visual 移动为 1、点击为 3；释放及状态查询不计入这一输入报告数。

@@ -72,6 +72,8 @@ class Bridge:
             self.log.flush()
 
     def _write(self, op, **args):
+        if op == 'mouse.move':
+            raise ValueError('Relative pointer movement has been removed; use abs.move')
         self.counter += 1
         payload = {'v': 1, 'session': self.session, 'id': self.counter, 'op': op, **args}
         line = json.dumps(payload, separators=(',', ':')).encode('utf-8')
@@ -188,7 +190,6 @@ def main():
     subs = parser.add_subparsers(dest='command', required=True)
     subs.add_parser('status')
     monitor = subs.add_parser('monitor'); monitor.add_argument('--seconds', type=float, default=30)
-    move = subs.add_parser('move'); move.add_argument('dx', type=int); move.add_argument('dy', type=int)
     click = subs.add_parser('click'); click.add_argument('--button', type=int, choices=[1, 2, 3], default=1)
     key = subs.add_parser('key'); key.add_argument('usage', type=int); key.add_argument('--modifiers', type=int, default=0)
     text = subs.add_parser('text'); text.add_argument('text')
@@ -212,7 +213,6 @@ def main():
                 time.sleep(0.5)
             return
         if args.command == 'status': result = bridge.request('status')
-        elif args.command == 'move': result = bridge.request('mouse.move', dx=args.dx, dy=args.dy)
         elif args.command == 'click': result = bridge.request('mouse.click', button=args.button)
         elif args.command == 'key': result = bridge.request('keyboard.tap', usage=args.usage, modifiers=args.modifiers)
         elif args.command == 'text': result = bridge.type_ascii(args.text)

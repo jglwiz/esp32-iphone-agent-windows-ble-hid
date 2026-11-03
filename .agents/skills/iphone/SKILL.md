@@ -1,11 +1,15 @@
 ---
 name: iphone
-description: 在 Windows 上部署或使用本项目的 ESP32 BLE HID 与 AirPlay 后端，观察并操作真实 iPhone，包括截图、点击、移动、滚动和键盘输入。用于 iPhone 控制环境初始化及实际手机操作，不用于一般 iOS 咨询或 App 开发。
+description: 在 Windows 上部署或使用本项目的 ESP32 BLE HID 与 AirPlay 后端，观察并操作真实 iPhone，包括截图、绝对定位、点击、滚轮和键盘输入。用于 iPhone 控制环境初始化及实际手机操作，不用于一般 iOS 咨询或 App 开发。
 ---
 
 # iPhone
 
 控制链路为 PC → USB 串口 → ESP32-S3 → BLE HID → iPhone，AirPlay 返回画面。USB 接 PC，不启动历史 USB HID 服务。业务入口默认 `http://127.0.0.1:8892`。
+
+## 最新运行验收状态
+
+2026-11-03 已部署固件 0.4.2、guard v9 和静止截图观察返回。143 项后端测试通过；九点视觉校准及五点独立验证通过，修复后三次复位重连与 36 次定位通过（含 20 次连续同点）。真实四角落点内缩约 20px，不能宣称每个屏幕像素都可达；物理方向变化和长期稳定性未验证。36 点范围复验通过并保存 verified profile，矩形范围 [24,60,471,1010]，另验证四边中点；普通校准 API 连续同点 5 次通过。当前运行态以 health 与 backend/doc/direction-root-cause.md 为准。
 
 ## 定位与配置
 
@@ -17,6 +21,16 @@ description: 在 Windows 上部署或使用本项目的 ESP32 BLE HID 与 AirPla
 - 自带参考文件相对本 skill 目录定位；仓库文档、Python 和客户端相对已确定的仓库定位。路径必须解析为绝对路径。
 
 找到仓库后先读其 `AGENTS.md`，实际部署或实机测试遵守其分工。`backend/.deployment.json` 包含本机路径与管理 token，只供现有部署工具使用，不输出、复制进 skill 或提交 Git。环境变量由调用终端继承，GUI 未继承时使用用户在任务中指定的值。
+
+校准参数由后端读取，文件为 `<IPHONE_RUNTIME_DIR>/service/calibration-profile.json`，不写入技能。运行目录以该部署配置为准，不把 `.runtime` 或 `backend/.runtime` 硬当作唯一位置。以 `/health.profile` 的运行态、设备描述符版本和验证状态为准；磁盘 `verified` 不代表当前连接已验证。
+
+## 唯一定位方式与部署边界
+
+日常定位、诊断与校准均只用 `native_hid` 原生绝对 HID。相对移动、相对拖拽和视觉相对控制器已从源码删除：不调用 `move/tap/drag`、dx/dy、`mouse.move` 或 `visual_relative`，不作唤醒、诊断或兜底，即使旧运行实例仍接受这些请求也不使用。原地点击、滚轮和键盘独立保留；滚轮不是指针定位。
+
+2026-11-03 已构建、部署固件 0.4.2 并完成后续验收。实际运行能力、版本和校准状态以 `/health` 为准；后续验收记录以仓库 `backend/doc/usage.md` 为准，不能将源码更新当成上线或测试通过。
+
+流程为：截图选目标 → 绝对移动 → 核对真实落点 → 授权点击 → 核对界面结果。校准只修正稳定的小偏差，同点重复、重连、方向变化另行验收；失败不退回相对定位。上次命令坐标不是手机真实位置，PC 新帧时间也不能证明手机已完成动作。踩坑与原因见仓库 `backend/doc/direction-root-cause.md`。
 
 ## 部署或恢复
 
@@ -41,3 +55,5 @@ description: 在 Windows 上部署或使用本项目的 ESP32 BLE HID 与 AirPla
 日常恢复、认证管理接口、复位和校准按仓库 `backend/doc/usage.md` 及相关专题文档执行。管理 token 不放在命令行或输出中；管理操作应核对实例和设备身份，未知执行结果不反复重试。
 
 报告实际观察到的效果和未验证部分。默认保持服务与 UxPlay 运行，截图仅本地保存。
+
+静止画面可返回 `capture.state=observation_only`，附带原始截图、`after_action=false`、`effect_verified=false`；这是可供查看的图，不是动作已生效的证明，不能据此自动重放或点击；人工 click_at 仍须实际审图、引用对应 reviewed_action_id，并通过连接、时间及目标一致性验证。常规绝对移动优先使用连续 guard；它可读取旧图作几何输入，但须由后续新帧挑战证明到位。重连后 readiness 不保证首报告生效，guard 最多换一次绝对基准点恢复，仍失败就停止，不重放按钮/键盘。

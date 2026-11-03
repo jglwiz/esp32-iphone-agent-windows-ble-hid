@@ -15,7 +15,7 @@
 ```powershell
 $python = '.\backend\.venv\Scripts\python.exe'
 & $python -m iphone_backend.esp32.serial_transport status
-& $python -m iphone_backend.esp32.serial_transport move 20 0
+# 相对 move 已删除。定位使用统一 Backend 的 move_to，并先确认实际指针位置。
 & $python -m iphone_backend.esp32.serial_transport click
 # 先确认 iPhone 的测试文本框已获得焦点、硬件键盘布局为英文。
 & $python -m iphone_backend.esp32.serial_transport text 'ble123'
@@ -35,7 +35,7 @@ $python = '.\backend\.venv\Scripts\python.exe'
 ESP32 GCC 会拼接包含多层 `../` 的头文件路径，在较深的克隆目录中可能报 `bits/c++config.h` 不存在，即使文件实际存在。脚本通过 Windows `subst` 临时将仓库映射为 D: 至 Z: 中的空闲盘符，安装、编译和刷写均使用此短路径，完成或异常退出时解除映射。文件仍保存在原仓库内，不复制工具链，也不更改系统长路径设置；没有空闲盘符时直接报错。不要同时对同一克隆运行多个构建。
 
 - [固件](../../firmware/serial_ble_hid/serial_ble_hid.ino)：UART0 / Serial0，115200 8N1；Arduino ESP32 3.3.12 + 独立 **NimBLE-Arduino 2.3.8**。不注册 USB HID，不启用 Wi-Fi。
-- [报告描述符](../../firmware/serial_ble_hid/hid_reports.h)：键盘 ID 1，鼠标 ID 2；BLE 报告值不额外前置 Report ID。
+- [报告描述符](../../firmware/serial_ble_hid/hid_reports.h)：键盘 ID 1、滚轮 ID 2（X/Y 恒零）、绝对位置 ID 4、独立按钮 ID 5；BLE 报告值不额外前置 Report ID。
 - [CLI](../../backend/src/iphone_backend/esp32/serial_transport.py)：标准库与 pyserial，显式控制 DTR/RTS；超时或重启后不自动重放动作。
 - [构建脚本](../../scripts/build.ps1)：工具链保存在本仓库 .tools/，NimBLE-Arduino 位于 .build-deps/，编译中间文件位于 .build/work/，固件输出位于 .build/。这些目录不提交 Git。`-SetupOnly` 只安装依赖；默认只编译；`-Upload -Port COM4` 只在确认目标端口与备份后使用，不允许与 `-SetupOnly` 同用。
 
@@ -50,7 +50,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload 
 & $python backend\tools\serial_smoke.py
 ```
 
-目前实现 hello/status/ping/diag、mouse.move/click/down/up/scroll、keyboard.tap/down/up、release_all/cancel。一次只执行一个动作，移动拆成每 20 ms 最多 8 单位；单击和按键有 60 ms 按下间隔。CLI 的 text 在 PC 上转换为连续 keyboard.tap。diag 返回实际 Report Map 和 Report Reference；status 包含协议模式与最近报告字节。
+目前实现 hello/status/ping/diag、abs.move/click、mouse.click/down/up/scroll、keyboard.tap/down/up、release_all/cancel。0.4.2 源码移除 mouse.move，相对定位与拖拽不再提供；本轮未构建或刷写。一次只执行一个动作；单击和按键有 60 ms 按下间隔。CLI 的 text 在 PC 上转换为连续 keyboard.tap。diag 返回实际 Report Map 和 Report Reference；status 包含协议模式与最近报告字节。
 
 协议使用有版本、会话和请求 ID 的按行 JSON，最大 512 字节。保留最近 16 个动作结果；相同 ID/相同请求返回已有结果，不重复执行，相同 ID/不同请求报错。hello 切换会话会取消旧动作、释放输入。动作的 accepted 与最终 sent/error 分开；故障后的 partial_unknown 表示可能已部分执行。缓存仅限当前启动和活跃会话，未实现跨断电去重。
 
@@ -60,7 +60,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Upload 
 
 0.3.3包含“先按修饰键、再按字符、先松字符、最后松修饰键”的兼容时序，但曾出现同版本失效。2026-11-02恢复原固件后ASCII输入通过，根因仍未确定；不能把连接ready或切到英文键帽当作输入正确的证明，也不将反复刷写当作保证有效的恢复步骤。诊断顺序及证据边界见[修饰键说明](../../firmware/serial_ble_hid/doc/keyboard-modifiers.md)。
 
-本轮完成计划 P1。尚未实现 bond.clear 命令、完整动作队列、Boot Protocol、媒体键、水平滚动及视觉坐标校准。现有 USB HID 校准不能套用。拖动与双向滚轮已通过单轮实机验证；自动重连、完整压力测试与故障恢复矩阵尚未系统验证，不能从首轮成功推断其已通过。
+本轮完成计划 P1。尚未实现 bond.clear 命令、完整动作队列、Boot Protocol、媒体键、水平滚动及视觉坐标校准。现有 USB HID 校准不能套用。历史拖动测试不代表当前支持（相对拖动已删除）；双向滚轮曾通过单轮实机验证；自动重连、完整压力测试与故障恢复矩阵尚未系统验证，不能从首轮成功推断其已通过。
 
 ## 备份与恢复
 

@@ -71,17 +71,22 @@ class FrameCapture:
         except (InvalidFrame, ValueError) as exc:return {'state':'invalid','reason':str(exc)},None
         except (TimeoutError,httpx.HTTPError) as exc:return {'state':'unavailable','reason':str(exc) or 'Frame read timed out'},None
 
-    async def capture(self, after, deadline, cancelled):
+    async def capture(self, after, deadline, cancelled, *, observation_after=None):
         """deadline uses perf_counter; caller releases all input before entering."""
         end = min(deadline, time.perf_counter() + 2.5)
         status = {'state': 'unavailable', 'reason': 'No frame before capture deadline'}
+        candidate = None
+        def incomplete():
+            if candidate is not None and status['state'] == 'stale_or_unknown' and time.time()-candidate['frame_time'] <= 5:
+                return {'state':'observation_only','reason':'Frame received after input but before settlement; action effect unverified','effect_verified':False}, {**candidate, 'age_seconds':time.time()-candidate['frame_time']}
+            return status, None
         if cancelled():
             return {'state': 'cancelled', 'reason': 'Capture cancelled'}, None
         if time.perf_counter() >= end:
             return status, None
 
         async def observe():
-            nonlocal status
+            nonlocal status, candidate
             async with httpx.AsyncClient(trust_env=False, timeout=None) as client:
                 while time.perf_counter() < end:
                     try:
@@ -97,6 +102,8 @@ class FrameCapture:
                             if age > 5 or (after is not None and frame.timestamp < after):
                                 status = {'state': 'stale_or_unknown',
                                           'reason': 'No fresh frame after settlement; static versus stalled unknown'}
+                                if observation_after is not None and frame.snapshot_version == 1 and frame.frame_id and age <= 5 and observation_after <= frame.timestamp < after:
+                                    candidate = {'jpeg_base64':base64.b64encode(frame.jpeg).decode(),'frame_id':frame.frame_id,'frame_time':frame.timestamp,'received_at':received,'age_seconds':age,'after_action':False,'snapshot_version':1,'atomic_snapshot':True,'settled_at':after,'effect_verified':False}
                             else:
                                 result = {'jpeg_base64': base64.b64encode(frame.jpeg).decode(),
                                           'frame_id': frame.frame_id, 'frame_time': frame.timestamp,
@@ -117,7 +124,7 @@ class FrameCapture:
                     except httpx.HTTPError as exc:
                         status = {'state': 'unavailable', 'reason': str(exc) or 'Frame read timed out'}
                     await asyncio.sleep(min(.02, max(0, end-time.perf_counter())))
-            return status, None
+            return incomplete()
 
         task = asyncio.create_task(observe())
         try:
@@ -126,7 +133,7 @@ class FrameCapture:
                     return {'state': 'cancelled', 'reason': 'Capture cancelled'}, None
                 remaining = end - time.perf_counter()
                 if remaining <= 0:
-                    return status, None
+                    return incomplete()
                 if task.done():
                     return task.result()
                 # Poll the thread-safe cancellation flag; early timer wakeups recompute budget.

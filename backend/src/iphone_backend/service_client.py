@@ -8,7 +8,7 @@ import uuid
 
 
 def act(steps, output, *, request_id=None, settle_ms=700, timeout_seconds=20,
-        base_url='http://127.0.0.1:8892', coordinate_backend=None, capture=True, diagnostic_uncalibrated=False, manual_visual=False, reviewed_action_id=None):
+        base_url='http://127.0.0.1:8892', coordinate_backend='native_hid', capture=True, diagnostic_uncalibrated=False, manual_visual=False, reviewed_action_id=None):
     payload = {'request_id': request_id or uuid.uuid4().hex, 'steps': steps,
                'capture': capture, 'settle_ms': settle_ms, 'timeout_seconds': timeout_seconds}
     if coordinate_backend is not None:
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     parser.add_argument('--output')
     parser.add_argument('--request-id')
     parser.add_argument('--operation', choices=['action','health','start-calibration','get-calibration','cancel-calibration'], default='action')
-    parser.add_argument('--coordinate-backend', choices=['native_hid','visual_relative'])
+    parser.add_argument('--coordinate-backend', choices=['native_hid'], default='native_hid')
     parser.add_argument('--no-capture', action='store_true')
     parser.add_argument('--diagnostic-uncalibrated', action='store_true')
     parser.add_argument('--mode', choices=['verify','calibrate'])

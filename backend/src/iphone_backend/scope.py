@@ -8,7 +8,7 @@ from iphone_backend.pointer_guard import guard as verify_pointer_response
 
 # Explicit usable-area validation, not automatic shrinking after a failed job.
 REGION=[24,60,471,1010]
-TEMPLATE_VERSION='usable-area-v1'
+TEMPLATE_VERSION='usable-area-and-edge-midpoints-v2'
 def template():
     points=[(248,540),(150,300),(350,300),(150,700),(350,700)]
     grid=[(x,y) for y in (60,540,1010) for x in (24,248,471)]
@@ -17,6 +17,7 @@ def template():
         row=grid.copy();rng.shuffle(row)
         while row[0]==points[-1]:rng.shuffle(row)
         points.extend(row)
+    points.extend([(248,0),(0,540),(495,540),(248,1079)])
     return points
 
 class ScopeJob:
@@ -34,7 +35,7 @@ class ScopeJob:
         try:self.save()
         except OSError as err:self.owner.set_fault('Scope evidence persistence failed: '+str(err))
     def capture(self,after=None):
-        state,frame=self.owner.capture(after,self.cancel,self.deadline)
+        state,frame=self.owner.capture(after,self.cancel,self.deadline,geometry_only=after is None)
         if frame is None or frame.get('snapshot_version')!=1 or frame.get('atomic_snapshot') is not True:raise ValueError('Fresh v1 frame unavailable')
         self.owner.accept_geometry(frame,self.profile)
         raw=base64.b64decode(frame.pop('jpeg_base64'));image=cv2.imdecode(np.frombuffer(raw,np.uint8),cv2.IMREAD_COLOR)
@@ -86,6 +87,9 @@ class ScopeJob:
         try:
             if self.result['state']!='awaiting_review':raise ValueError('Scope job is not awaiting review')
             if not hasattr(self,'review_deadline') or time.monotonic()>self.review_deadline:raise ValueError('Scope review window expired')
+            # Review has its own bounded execution budget; sampling's deadline
+            # must not silently shorten the advertised review window.
+            self.deadline=time.perf_counter()+min(20,self.review_deadline-time.monotonic())
             self.status();self.capture()
             samples=self.result['samples'];observations=review['observations']
             if len(samples)!=len(template()) or set(observations)!={s['sample_id'] for s in samples}:raise ValueError('Every fixed sample needs one review')

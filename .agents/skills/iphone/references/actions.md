@@ -2,6 +2,8 @@
 
 本文件随仓库版本维护。精确定义以部署 checkout 的 `backend/src/iphone_backend/orchestration.py` 中 `Action`、`Step` 和执行逻辑为准；全局复制的 skill 若与后端版本不同，先核对定义。
 
+本参考对应固件 0.4.2、guard v9 的仅原生绝对定位 API。固件已删除 mouse.move，保留原地按钮和滚轮；Report 2 的 X/Y 恒零。三次复位重连及重复定位已实测；屏幕四角存在实际内缩，物理旋转未测。
+
 ## 请求结构
 
 业务入口为 `POST /action`。下例仅展示格式，不授权执行输入：
@@ -9,7 +11,8 @@
 ```json
 {
   "request_id": "unique-request-id",
-  "steps": [{"op": "move", "dx": 20, "dy": 0}],
+  "coordinate_backend": "native_hid",
+  "steps": [{"op": "move_to", "x": 250, "y": 540}],
   "capture": true,
   "settle_ms": 700,
   "timeout_seconds": 20
@@ -23,7 +26,7 @@
 | `capture` | 默认 true |
 | `settle_ms` | 0–2000，默认 700 |
 | `timeout_seconds` | 1–45，默认 20 |
-| `coordinate_backend` | 可省略以使用服务配置，或指定 `native_hid` / `visual_relative` |
+| `coordinate_backend` | 默认且唯一模式 `native_hid`；不接受 `visual_relative` |
 | `diagnostic_uncalibrated` | 默认 false，诊断标志不是定位成功的证明 |
 | `manual_visual` | 默认 false；约束见下文 |
 | `reviewed_action_id` | 人工审查点击所引用的移动动作 ID |
@@ -34,12 +37,9 @@
 
 | `op` | 参数 | 行为 |
 | --- | --- | --- |
-| `move` | `dx`, `dy` | 相对移动 |
 | `click` | `button` | 当前指针处点击，不定位 |
-| `tap` | `dx`, `dy`, `button` | 相对移动后点击，不是绝对坐标触摸 |
-| `drag` | `dx`, `dy`, `button` | 按住按钮、相对移动、释放 |
-| `move_to` | `x`, `y` | 定位到截图像素 |
-| `click_at` | `x`, `y` | 定位并点击，仅主按钮 |
+| `move_to` | `x`, `y` | 原生绝对定位到截图像素，检查实际指针响应 |
+| `click_at` | `x`, `y` | 经定位验证后点击，仅主按钮 |
 | `scroll` | `wheel` | 滚轮，方向需观察手机确认 |
 | `text` | `text` | 可打印 US ASCII，不含换行 |
 | `key` / `key_down` | `usage`, `modifiers` | HID 键盘 usage，按一下或按住 |
@@ -47,7 +47,7 @@
 | `mouse_down` / `mouse_up` | `button` | 按住或释放按钮 |
 | `wait` | `seconds` | 等待 |
 
-- `dx`、`dy`：整数，−2048–2048，默认 0；不是保证等量的屏幕像素。
+- `move`、`tap`、`drag` 和 `dx/dy` 已删除；整份请求在输入前拒绝，没有相对移动、拖拽或兜底接口。
 - `x`、`y`：整数截图像素，当前 `x=0–495`、`y=0–1079`，绝对操作必填；不能传归一化坐标。
 - `button`：1–3，默认 1；额外按钮在 iOS 的实际映射需单独验证。
 - `wheel`：整数 −127–127，默认 0。
@@ -84,3 +84,17 @@ Python 调用可使用已安装包；尚未安装包但需要独立调用客户�
 3. 需要点击且已获授权时，以同坐标单步 `click_at`，使用相同模式并设置 `reviewed_action_id` 为前一步 ID。
 
 服务会核对同实例、连接绑定、截图来源、目标与时效等条件。审查过期或连接改变时重新观察未执行的动作，不绕过检查。普通定位模式使用其校准与指针验证流程，不默认开启诊断标志。
+
+## 校准与已知陷阱
+
+自动事件校准、视觉校准采样和独立留出点都使用原生绝对报告，不夹杂相对移动。校准文件为 `<IPHONE_RUNTIME_DIR>/service/calibration-profile.json`；检查运行态 profile 与当前设备描述符是否匹配，不能手改版本或 verified 字段冒充验收。
+
+曾出现相对移动后重发相同绝对目标仍不归位；改用两个不同绝对点逐步审图恢复，但底层原因尚未确定。若需无点击诊断，可先移至另一屏内绝对点审图，再移至目标审图，不能以相对 nudge 唤醒。
+
+命令坐标、报告已发送和 PC 新帧时间均不是到位证明。校准只能修正稳定偏差，不能修复偶发不响应、方向反转或点击不生效。详见仓库 `backend/doc/direction-root-cause.md`；单一控件不响应时，可在授权范围内观察或使用其他可逆入口，不重复提交未知的发送等动作。
+
+## 静止截图与重连
+
+`capture.state=observation_only` 表示得到输入结束后、settle 之前的有效图，但无法确认后续画面。返回原始 `frame_time`、实际 `age_seconds`、`after_action=false`、`effect_verified=false`；不带 capture_error 不代表效果已确认。超过 5 秒、输入前的帧、取消和不可用源不走此返回。普通 guard 移动的 `pointer_response_verified=true` 是另一种明确的位置证据。`reports_sent`、`available` 和 `after_action` 本身都不证明业务成功。
+
+重连后 profile 失效；用正式范围复验恢复，不能手改验证状态。无按钮 guard 可最多更换一次绝对 anchor 来恢复首报告未响应，失败继续拦截点击。scope 模板为 usable-area-and-edge-midpoints-v2，36 点含三轮屏内网格及四边中点，矩形范围 [24,60,471,1010]，不代表四角可达。

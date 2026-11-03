@@ -26,7 +26,7 @@ def initialize(uxplay_dir, phone_id=''):
         'HIDAGENT_DATA': str(BACKEND / '.runtime' / 'airplay-data'),
         'AIRPLAY_NAME': 'iPhone-Agent',
         'BLE_HID_RESTART_TOKEN': secrets.token_urlsafe(48),
-        'BLE_HID_COORDINATE_BACKEND': 'visual_relative',
+        'BLE_HID_COORDINATE_BACKEND': 'native_hid',
         'BLE_HID_PHONE_ID': phone_id,
     }
     # Exclusive creation also protects against concurrent bootstrap runs.

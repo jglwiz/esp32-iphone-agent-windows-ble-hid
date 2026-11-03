@@ -12,6 +12,35 @@ def disk_reference(mask):
     return float(radius)
 
 
+def clipped_disk_center(mask, reference_radius=None):
+    """Fit visible curvature at a screenshot edge, excluding the artificial cut.
+
+    No target coordinates enter the fit. Require a long circular arc and reject
+    corners/short arcs, non-circular shapes, and a radius unlike the other disk.
+    """
+    ys,xs=np.nonzero(mask)
+    if not len(xs) or not (xs.min()==0 or xs.max()==495 or ys.min()==0 or ys.max()==1079):return None
+    contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    if len(contours)!=1:return None
+    points=contours[0][:,0,:].astype(float)
+    points=points[(points[:,0]>1)&(points[:,0]<494)&(points[:,1]>1)&(points[:,1]<1078)]
+    if len(points)<24:return None
+    coeff=np.linalg.lstsq(np.c_[2*points,np.ones(len(points))],(points*points).sum(axis=1),rcond=None)[0]
+    center=coeff[:2];radius2=coeff[2]+np.dot(center,center)
+    if radius2<=0:return None
+    radius=float(np.sqrt(radius2))
+    if not 10<=radius<=20 or (reference_radius is not None and abs(radius-reference_radius)>3):return None
+    errors=np.abs(np.linalg.norm(points-center,axis=1)-radius)
+    if errors.max()>1.25 or np.sqrt(np.mean(errors**2))>.6:return None
+    angles=np.sort(np.mod(np.arctan2(points[:,1]-center[1],points[:,0]-center[0]),2*np.pi))
+    span=2*np.pi-np.diff(np.r_[angles,angles[0]+2*np.pi]).max()
+    if span<np.deg2rad(120):return None
+    if not (-1<=center[0]<=496 and -1<=center[1]<=1080):return None
+    center=np.clip(center,[0,0],[495,1079])
+    return {'center':center.tolist(),'radius':radius,'arc_degrees':float(np.rad2deg(span)),
+            'support_points':len(points),'fit_residual_px':float(errors.max()),'method':'screen_clipped_circle'}
+
+
 def arc_center(mask, radius):
     """Fixed-radius envelope fit; ambiguous or insufficient arcs are rejected.
 
@@ -19,6 +48,8 @@ def arc_center(mask, radius):
     Target coordinates are deliberately not an input. Near-optimal centers must
     agree within two pixels; this is separate from the existing 8px target gate.
     """
+    clipped=clipped_disk_center(mask,radius)
+    if clipped is not None:return clipped
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     if len(contours) != 1: return None
     points = contours[0][:, 0, :].astype(float)

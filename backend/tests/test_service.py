@@ -115,13 +115,15 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual([op for op, _ in self.fake.calls][-2:], ['mouse.down','release_all'])
 
     def test_frame_must_follow_settle_not_just_input(self):
-        # Simulate capture backlog: timestamp after input but before settle cannot pass.
+        # A pre-settle frame is useful for observation, never effect confirmation.
         self.worker.frames.reader = fake_frame(.5)
         f, _ = self.worker.submit(Action(request_id='settle', steps=[{'op':'click'}],
                                         settle_ms=700, timeout_seconds=1))
         r = f.result(3)
-        self.assertIn('capture_error', r)
-        self.assertNotIn('frame', r)
+        self.assertEqual(r['capture']['state'], 'observation_only')
+        self.assertFalse(r['frame']['after_action'])
+        self.assertFalse(r['frame']['effect_verified'])
+        self.assertEqual(sum(op == 'mouse.click' for op, _ in self.fake.calls), 1)
 
     def test_expired_queued_action_never_clicks(self):
         f1, _ = self.worker.submit(Action(request_id='long', steps=[{'op':'wait','seconds':1.2}], capture=False))

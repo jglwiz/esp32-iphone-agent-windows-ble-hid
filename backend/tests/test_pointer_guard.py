@@ -61,7 +61,7 @@ class GuardTests(unittest.TestCase):
         self.assertFalse(s.add('5',.4,ok))
         self.assertFalse(s.add('6',.5,{'valid':True,'center':[105,200]}))
     def test_guard_delayed_frames_and_direction_failure(self):
-        for reverse, local_scene, review_scene in ((False,False,False),(True,False,False),(False,True,False),(False,True,True)):
+        for reverse, local_scene, review_scene, drop_first in ((False,False,False,False),(True,False,False,False),(False,True,False,False),(False,True,True,False),(False,False,False,True)):
             with tempfile.TemporaryDirectory() as tmp:
                 class Worker:
                     runtime=Path(tmp)
@@ -70,9 +70,10 @@ class GuardTests(unittest.TestCase):
                     def pause(self,seconds,*args):time.sleep(seconds)
                     def send(self,c,d,op,**kw):
                         self.calls.append(op);self.previous=self.point;self.moves+=1
+                        if drop_first and self.moves==1:return
                         x=kw['x']/32767*495;y=kw['y']/32767*1079
                         self.point=(495-x,1079-y) if reverse else (x,y)
-                        self.lag=2
+                        self.lag=18 if self.moves == 1 else 2
                     def capture(self,*args,**kw):
                         self.index+=1
                         point=self.previous if self.lag else self.point
@@ -87,7 +88,11 @@ class GuardTests(unittest.TestCase):
                 if failed:
                     with self.assertRaisesRegex(RuntimeError,'click blocked'):guard(w,(250,550),None,threading.Event(),time.perf_counter()+8,review_local_scene=review_scene)
                     self.assertEqual(w.invalidated,reverse)
-                else:self.assertEqual(guard(w,(250,550),None,threading.Event(),time.perf_counter()+8,review_local_scene=review_scene)['state'],'passed')
+                else:
+                    outcome=guard(w,(250,550),None,threading.Event(),time.perf_counter()+8,review_local_scene=review_scene)
+                    self.assertEqual(outcome['state'],'passed')
+                    self.assertEqual(outcome['reports_attempted'],4 if drop_first else 3)
+                    self.assertEqual(outcome['anchor_recovered'],drop_first)
                 self.assertNotIn('abs.click',w.calls)
                 result=json.loads(next(Path(tmp).rglob('result.json')).read_text())
                 self.assertGreater(len(result['frames']),3)

@@ -89,6 +89,17 @@ class NativeServiceTests(unittest.TestCase):
   self.w.frames.reader=fake_frame(60);a=Action(request_id='geometry',coordinate_backend='native_hid',diagnostic_uncalibrated=True,steps=[{'op':'move_to','x':100,'y':300}],capture=False,timeout_seconds=1)
   self.assertEqual(self.w.submit(a)[0].result(3)['input_state'],'not_started');self.assertFalse(any(op=='abs.move' for op,_ in self.bridge.calls))
 
+ def test_landscape_frame_blocks_entire_coordinate_action(self):
+  from iphone_backend.airplay.frames import Frame
+  async def landscape(client):
+   jpg=cv2.imencode('.jpg',np.zeros((496,1080,3),np.uint8))[1].tobytes()
+   return Frame(jpg,time.time(),'test:landscape')
+  self.w.frames.reader=landscape
+  action=Action(request_id='landscape',coordinate_backend='native_hid',steps=[{'op':'key','usage':4},{'op':'click_at','x':248,'y':540}],capture=False)
+  result=self.w.submit(action)[0].result(3)
+  self.assertEqual(result['input_state'],'not_started')
+  self.assertFalse(any(op in ('keyboard.tap','abs.move','abs.click') for op,_ in self.bridge.calls))
+
  def test_fault_invalidates_profile(self):
   self.w.profile={'verification':'verified'};before=self.w.profile_generation
   self.w.set_fault('device rebooted');self.assertEqual(self.w.profile['verification'],'needs_verification');self.assertGreater(self.w.profile_generation,before);self.assertIsNone(self.w.geometry)
@@ -153,12 +164,12 @@ class NativeServiceTests(unittest.TestCase):
   self.assertEqual(self.w.submit(a)[0].result(3)['input_state'],'not_started')
   self.assertFalse(any(op in ('abs.move','mouse.click') for op,_ in self.bridge.calls))
 
- def test_diagnostic_rejects_old_frame_with_saved_profile(self):
+ def test_manual_diagnostic_rejects_old_frame_with_saved_profile(self):
   from iphone_backend.airplay.frames import Frame
   jpg=cv2.imencode('.jpg',np.zeros((1080,496,3),np.uint8))[1].tobytes()
   async def read(client): return Frame(jpg,time.time()-10,'test:3')
   self.w.frames.reader=read
-  a=Action(request_id='stale-diagnostic',coordinate_backend='native_hid',diagnostic_uncalibrated=True,steps=[{'op':'move_to','x':100,'y':300}],capture=False)
+  a=Action(request_id='stale-diagnostic',coordinate_backend='native_hid',diagnostic_uncalibrated=True,manual_visual=True,steps=[{'op':'move_to','x':100,'y':300}],capture=True)
   self.assertEqual(self.w.submit(a)[0].result(3)['input_state'],'not_started')
   self.assertFalse(any(op=='abs.move' for op,_ in self.bridge.calls))
 

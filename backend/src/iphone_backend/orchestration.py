@@ -8,6 +8,7 @@ import hashlib
 from concurrent.futures import Future
 from contextlib import asynccontextmanager
 import json
+import logging
 import os
 from pathlib import Path
 import queue
@@ -22,7 +23,6 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from iphone_backend.esp32.serial_transport import Bridge, ascii_key
 from iphone_backend.esp32.service import SerialService
 from iphone_backend.airplay.frames import FrameCapture
-from iphone_backend.absolute_pointer import run as run_absolute
 from iphone_backend.native_pointer import map_target, validate_profile, SUPPORTED_DESCRIPTOR_VERSIONS
 from iphone_backend.pointer_guard import guard as verify_pointer_response
 from iphone_backend.calibration import load_unverified
@@ -36,12 +36,10 @@ from iphone_backend.device_reset import ResetJob
 
 class Step(BaseModel):
     model_config = ConfigDict(extra='forbid', strict=True)
-    op: Literal['move', 'click', 'tap', 'drag', 'scroll', 'text', 'key',
+    op: Literal['click', 'scroll', 'text', 'key',
                 'key_down', 'key_up', 'mouse_down', 'mouse_up', 'wait', 'move_to', 'click_at']
     x: int | None = Field(default=None, ge=0, le=495)
     y: int | None = Field(default=None, ge=0, le=1079)
-    dx: int = Field(default=0, ge=-2048, le=2048)
-    dy: int = Field(default=0, ge=-2048, le=2048)
     button: int = Field(default=1, ge=1, le=3)
     wheel: int = Field(default=0, ge=-127, le=127)
     usage: int = Field(default=4, ge=0, le=101)
@@ -72,7 +70,7 @@ class Action(BaseModel):
     request_id: str = Field(min_length=1, max_length=80)
     steps: list[Step] = Field(default_factory=list, max_length=32)
     capture: bool = True
-    coordinate_backend: Literal['native_hid', 'visual_relative'] | None = None
+    coordinate_backend: Literal['native_hid'] | None = 'native_hid'
     diagnostic_uncalibrated: bool = False
     manual_visual: bool = False
     reviewed_action_id: str | None = None
@@ -131,9 +129,13 @@ class SerialWorker:
         self.fault = None
         self.status = None
         self.hid_diagnostics = None
-        self.coordinate_backend = os.environ.get('BLE_HID_COORDINATE_BACKEND', 'visual_relative')
-        if self.coordinate_backend not in ('native_hid', 'visual_relative'):
-            raise ValueError('Invalid configured coordinate backend')
+        configured_backend = os.environ.get('BLE_HID_COORDINATE_BACKEND', 'native_hid')
+        if configured_backend not in ('native_hid', 'visual_relative'):
+            raise ValueError('Only native_hid coordinate backend is supported')
+        if configured_backend == 'visual_relative':
+            logging.getLogger(__name__).warning(
+                'visual_relative has been removed; using native_hid. Update deployment configuration.')
+        self.coordinate_backend = 'native_hid'
         self.device_id = os.environ.get('BLE_HID_DEVICE_ID', '')
         self.phone_id = os.environ.get('BLE_HID_PHONE_ID', '')
         self.geometry = None
@@ -271,20 +273,7 @@ class SerialWorker:
 
     def step(self, s, cancel, deadline):
         send = lambda op, **kw: self.send(cancel, deadline, op, **kw)
-        if s.op in ('move', 'tap', 'drag'):
-            if s.op == 'drag':
-                send('mouse.down', button=s.button)
-            # Bound cancellation latency while preserving firmware's 8-unit report cadence.
-            dx, dy = s.dx, s.dy
-            while dx or dy:
-                x, y = max(-64, min(64, dx)), max(-64, min(64, dy))
-                send('mouse.move', dx=x, dy=y)
-                dx -= x; dy -= y
-            if s.op == 'tap':
-                send('mouse.click', button=s.button)
-            if s.op == 'drag':
-                send('mouse.up', button=s.button)
-        elif s.op == 'click': send('mouse.click', button=s.button)
+        if s.op == 'click': send('mouse.click', button=s.button)
         elif s.op == 'scroll': send('mouse.scroll', wheel=s.wheel)
         elif s.op == 'text':
             for char in s.text:
@@ -296,49 +285,16 @@ class SerialWorker:
         elif s.op in ('mouse_down', 'mouse_up'): send('mouse.' + s.op.split('_')[1], button=s.button)
         elif s.op == 'wait': self.pause(s.seconds, cancel, deadline)
 
-    def capture(self, after, cancel, deadline, geometry_only=False):
+    def capture(self, after, cancel, deadline, geometry_only=False, observation_after=None):
         # Dedicated serial actor maintains heartbeats while orchestration awaits frames.
         end = min(deadline, time.perf_counter()+2.5)
         cancelled = lambda: cancel.is_set() or self.stop_event.is_set() or bool(self.bridge and self.bridge.fault)
         result = asyncio.run(self.frames.geometry(end, cancelled) if geometry_only
-                             else self.frames.capture(after, end, cancelled))
+                             else self.frames.capture(after, end, cancelled, observation_after=observation_after))
         if self.bridge and self.bridge.fault:
             self.set_fault(self.bridge.fault)
             return {'state': 'unavailable', 'reason': self.bridge.fault}, None
         return result
-
-    def absolute(self, s, cancel, deadline):
-        """Run the entire visual loop inside the serial queue, without HTTP recursion."""
-        folder = self.runtime / 'absolute' / uuid.uuid4().hex
-
-        def perform(steps, path, settle_ms=700):
-            self.check(cancel, deadline)
-            result = {'input_state': 'partial_unknown', 'released': False}
-            try:
-                self.send(cancel, deadline, 'release_all')
-                for raw in steps:
-                    self.step(Step(**raw), cancel, deadline)
-                result['input_state'] = 'reports_sent' if steps else 'no_input'
-            finally:
-                try:
-                    self.bridge.request('release_all', timeout=1)
-                    result['released'] = True
-                except Exception as exc:
-                    self.set_fault(f'Absolute release failed: {exc}')
-                    raise
-            self.pause(settle_ms/1000, cancel, deadline)
-            # Static AirPlay can stop publishing. A no-input recheck accepts the
-            # latest <=5s snapshot; motion still requires a post-settlement frame.
-            result['capture'], frame = self.capture(time.time() if steps else None, cancel, deadline)
-            if frame is None:
-                result['capture_error'] = result['capture']['reason']
-            else:
-                Path(path).write_bytes(base64.b64decode(frame.pop('jpeg_base64')))
-                result['frame'] = frame
-            Path(path).with_suffix('.result.json').write_text(json.dumps(result), encoding='utf-8')
-            return result
-
-        return run_absolute((s.x, s.y), folder, perform, click=s.op == 'click_at')
 
     def execute(self, action, cancel, deadline):
         start = time.time()
@@ -384,9 +340,9 @@ class SerialWorker:
                 try:
                     geometry_profile = profile
                     if diagnostic:
-                        # Movement diagnostics bind to the current fresh source, never
-                        # to persisted calibration. This does not verify a profile.
-                        if geometry_frame['age_seconds'] > 5:
+                        # Guarded movement can challenge a static source. Manual review still
+                        # needs a fresh baseline; cached geometry proves no effect.
+                        if action.manual_visual and geometry_frame['age_seconds'] > 5:
                             raise ValueError('Diagnostic geometry requires a fresh snapshot')
                         source, sequence = geometry_frame['frame_id'].rsplit(':', 1)
                         geometry_profile = {'frame_source_id':source, 'frame_sequence':int(sequence),
@@ -430,10 +386,10 @@ class SerialWorker:
                             if self.record_status(current) or any(current.get(k) != v for k,v in result['connection_binding'].items()):
                                 raise RuntimeError('Connection changed after pointer verification; click blocked')
                             self.send(cancel, deadline, 'abs.click', x=hid[0], y=hid[1])
-                        trace = {'backend':'native_hid', 'target':[s.x,s.y], 'hid':hid, 'profile_id':context['profile']['profile_id'] if context['profile'] else None, 'status':'click_submitted' if s.op == 'click_at' else 'report_submitted', 'reports':6 if s.op == 'click_at' else 3, 'pointer_check':check}
+                        move_reports = (1 if s.op == 'move_to' else 0) if action.manual_visual else check.get('reports_attempted', 3)
+                        trace = {'backend':'native_hid', 'target':[s.x,s.y], 'hid':hid, 'profile_id':context['profile']['profile_id'] if context['profile'] else None, 'status':'click_submitted' if s.op == 'click_at' else 'report_submitted', 'reports':move_reports + (3 if s.op == 'click_at' else 0), 'pointer_check':check}
                     else:
-                        trace = self.absolute(s, cancel, deadline)
-                        trace['backend'] = 'visual_relative'
+                        raise RuntimeError('Only native_hid coordinate backend is supported')
                     result.setdefault('absolute', []).append(trace)
                     if trace['status'] not in ('reached', 'report_submitted', 'click_submitted'):
                         raise RuntimeError('Absolute operation stopped: ' + trace.get('reason', trace['status']))
@@ -477,7 +433,7 @@ class SerialWorker:
                 # received AFTER the settle interval; this alone does not prove UI causality.
                 result['settled_at'] = time.time()
                 result['capture'], frame = self.capture(result['settled_at'] if action.steps else None,
-                                                        cancel, deadline)
+                                                        cancel, deadline, observation_after=result['input_finished_at'])
                 if frame is not None:
                     try:
                         import cv2, numpy as np

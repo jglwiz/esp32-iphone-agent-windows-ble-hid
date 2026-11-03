@@ -61,7 +61,13 @@ class ClientTests(unittest.TestCase):
     def test_firmware_error_propagates(self):
         bridge = client(frame('error', error='hid_not_ready'))
         with self.assertRaisesRegex(BridgeError, 'hid_not_ready'):
+            bridge.request('abs.move', x=100, y=200)
+
+    def test_relative_move_is_rejected_without_serial_write(self):
+        bridge = client()
+        with self.assertRaisesRegex(ValueError, 'Relative pointer movement has been removed'):
             bridge.request('mouse.move', dx=1, dy=0)
+        self.assertEqual(bridge.io.written, [])
 
     def test_non_ascii_rejected_before_any_input(self):
         bridge = client()

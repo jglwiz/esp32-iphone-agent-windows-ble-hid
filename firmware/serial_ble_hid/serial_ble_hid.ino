@@ -10,7 +10,7 @@
 #include "services/gatt/ble_svc_gatt.h"
 
 
-static const char *VERSION = "0.4.1";
+static const char *VERSION = "0.4.2";
 static const char *NAME = "S3-Click-Buttons";
 static const uint32_t LEASE_MS = 2000, REPORT_MS = 20;
 NimBLEServer *server;
@@ -41,7 +41,7 @@ struct ReplyCache { int id = 0; String request, response; } cache[16];
 unsigned cacheNext = 0;
 struct Action {
   bool active = false;
-  int id = 0, dx = 0, dy = 0, wheel = 0, phase = 0;
+  int id = 0, wheel = 0, phase = 0;
   int x = 0, y = 0, startX = 0, startY = 0, frames = 1;
   String op, request;
   uint8_t usage = 0, modifiers = 0, button = 1;
@@ -97,8 +97,9 @@ bool sendReport(bool keyboard, uint8_t *data, size_t size) {
   return ch->notify();
 }
 bool sendKeys() { return sendReport(true, keys, sizeof(keys)); }
-bool sendMouse(int dx = 0, int dy = 0, int wheel = 0) {
-  uint8_t data[] = {0,(uint8_t)(int8_t)dx,(uint8_t)(int8_t)dy,(uint8_t)(int8_t)wheel};
+bool sendScroll(int wheel) {
+  // Preserve the paired report layout; X/Y are always zero. No relative positioning.
+  uint8_t data[] = {0,0,0,(uint8_t)(int8_t)wheel};
   return sendReport(false,data,sizeof(data));
 }
 bool absReady() {
@@ -154,6 +155,7 @@ void status(int id) {
   cJSON_AddStringToObject(j,"device_id",stableDeviceId.c_str());
   cJSON_AddNumberToObject(j,"connection_generation",connectionGeneration.load());
   cJSON_AddBoolToObject(j,"supports_absolute_pointer",true);
+  cJSON_AddBoolToObject(j,"supports_relative_pointer",false);
   cJSON_AddNumberToObject(j,"absolute_descriptor_version",3);
   cJSON_AddNumberToObject(j,"click_report_id",5);
   cJSON_AddBoolToObject(j,"click_repositions_pointer",false);
@@ -302,8 +304,6 @@ void handleLine(const String &line) {
     valid = integer(j,"x",0,32767,candidate.x) && integer(j,"y",0,32767,candidate.y);
     if (op == "abs.move") valid = valid && integer(j,"frames",1,16,candidate.frames,1,false);
     candidate.startX = absX; candidate.startY = absY;
-  } else if (op == "mouse.move") {
-    valid = integer(j,"dx",-2048,2048,candidate.dx) && integer(j,"dy",-2048,2048,candidate.dy);
   } else if (op == "mouse.scroll") {
     valid = integer(j,"wheel",-127,127,candidate.wheel);
   } else if (op == "mouse.click" || op == "mouse.down" || op == "mouse.up") {
@@ -334,12 +334,8 @@ void advanceAction() {
   } else if (action.op == "abs.click") {
     ok = sendAbsolute(action.x, action.y, action.phase == 1 ? 1 : 0);
     done = action.phase == 2; // position, press, release; each separated by 60 ms.
-  } else if (action.op == "mouse.move") {
-    int dx = constrain(action.dx,-8,8), dy = constrain(action.dy,-8,8);
-    ok = sendMouse(dx,dy); action.dx -= dx; action.dy -= dy;
-    done = !action.dx && !action.dy;
   } else if (action.op == "mouse.scroll") {
-    ok = sendMouse(0,0,action.wheel);
+    ok = sendScroll(action.wheel);
   } else if (action.op == "mouse.click") {
     if (!action.phase) { buttons |= action.button; done = false; }
     else buttons &= ~action.button;
@@ -368,7 +364,7 @@ void advanceAction() {
   }
   if (!ok) { abortAction("notify_failed_partial_unknown"); return; }
   if (done) { reply(action.id,"sent",nullptr,action.request); action.active = false; }
-  else { action.phase++; action.next = millis() + ((action.op == "mouse.move" || action.op == "abs.move") ? REPORT_MS : nextDelay); }
+  else { action.phase++; action.next = millis() + ((action.op == "abs.move") ? REPORT_MS : nextDelay); }
 }
 
 void setup() {

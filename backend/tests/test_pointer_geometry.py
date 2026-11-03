@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 from iphone_backend.pointer_guard import response
-from iphone_backend.pointer_geometry import arc_center
+from iphone_backend.pointer_geometry import arc_center, clipped_disk_center
 
 
 class GeometryTests(unittest.TestCase):
@@ -42,3 +42,22 @@ class GeometryTests(unittest.TestCase):
         self.assertLess(np.linalg.norm(np.array(result['center'])-(270,600)),3)
         self.assertFalse(response(before,after,(350,540),(280,600))['valid'])
         self.assertFalse(response(before,before,(350,540),(270,600))['valid'])
+
+class ClippedBoundaryTests(unittest.TestCase):
+    def test_four_half_disks_with_reference_radius_variation(self):
+        for point in ((248,0),(248,1079),(0,540),(495,540)):
+            mask=np.zeros((1080,496),np.uint8);cv2.circle(mask,point,14,1,-1)
+            fit=clipped_disk_center(mask,16)
+            self.assertIsNotNone(fit,point)
+            self.assertLess(np.linalg.norm(np.array(fit['center'])-point),1)
+    def test_short_corner_and_non_circular_shapes_rejected(self):
+        mask=np.zeros((1080,496),np.uint8);cv2.circle(mask,(0,0),14,1,-1)
+        self.assertIsNone(clipped_disk_center(mask,14))
+        mask[:]=0;mask[0:15,230:265]=1
+        self.assertIsNone(clipped_disk_center(mask,14))
+    def test_boundary_fit_never_uses_target_to_hide_position_error(self):
+        before=np.zeros((1080,496,3),np.uint8);after=before.copy()
+        cv2.circle(before,(168,100),16,(170,170,170),-1)
+        cv2.circle(after,(248,0),14,(170,170,170),-1)
+        self.assertTrue(response(before,after,(168,100),(248,0))['valid'])
+        self.assertFalse(response(before,after,(168,100),(270,0))['valid'])

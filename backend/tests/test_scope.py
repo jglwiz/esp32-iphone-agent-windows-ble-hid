@@ -11,7 +11,7 @@ class Worker(FakeWorker):
   super().__init__(p);self.instance_id='test-instance';self.device_id='dev';self.phone_id='phone';self.seq=0
   self.profile={'schema_version':1,'profile_id':'original','device_id':'dev','phone_id':'phone','descriptor_version':1,'geometry':[496,1080,'portrait'],'coordinate_space':'full_screenshot_pixels','verification':'verified','verified_region':[186,455,310,651],'axes':[{'slope':1.,'offset':0.},{'slope':1.,'offset':0.}],'mapping':'identity'}
  def accept_geometry(self,frame,profile):pass
- def capture(self,after,c,d):
+ def capture(self,after,c,d,**kwargs):
   state,frame=super().capture(after,c,d);self.seq+=1;frame.update(frame_id=str(self.seq),after_action=after is not None);return state,frame
  def pause(self,seconds,c,d):self.check(c,d)
  def send(self,c,d,op,**kw):
@@ -28,8 +28,8 @@ class ScopeTests(unittest.TestCase):
 
  def test_usable_area_is_explicit_and_repeated(self):
   points=template()
-  self.assertEqual(REGION,[24,60,471,1010]);self.assertEqual(len(points),32)
-  for x,y in points:self.assertTrue(24<=x<=471 and 60<=y<=1010)
+  self.assertEqual(REGION,[24,60,471,1010]);self.assertEqual(len(points),36)
+  for x,y in points:self.assertTrue((24<=x<=471 and 60<=y<=1010) or (x,y) in ((248,0),(0,540),(495,540),(248,1079)))
   for x in (24,248,471):
    for y in (60,540,1010):self.assertGreaterEqual(points.count((x,y)),3)
  def review(self,job):return {'reviewer':'independent reviewer','observations':{s['sample_id']:{'center':s['target'],'uncertainty_px':3} for s in job.result['samples']}}
@@ -49,6 +49,11 @@ class ScopeTests(unittest.TestCase):
  def test_expired_review_cannot_publish(self):
   with tempfile.TemporaryDirectory() as tmp:
    w=Worker(Path(tmp));j=ScopeJob(w,'id');j.run();j.review_deadline=time.monotonic()-1;j.approve(self.review(j));self.assertEqual(j.result['state'],'failed');self.assertEqual(w.profile['profile_id'],'original')
+ def test_review_budget_is_separate_from_completed_sampling(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   w=Worker(Path(tmp));j=ScopeJob(w,'id');j.run();j.deadline=time.perf_counter()-1
+   j.approve(self.review(j));self.assertEqual(j.result['state'],'passed')
+
  def test_error_plus_uncertainty_is_bound(self):
   with tempfile.TemporaryDirectory() as tmp:
    w=Worker(Path(tmp));j=ScopeJob(w,'id');j.run();review=self.review(j);item=review['observations']['sample-01'];item['center']=[item['center'][0]+5.1,item['center'][1]];item['uncertainty_px']=3;j.approve(review);self.assertEqual(j.result['state'],'failed');self.assertEqual(w.profile['profile_id'],'original')

@@ -333,3 +333,21 @@ class IntegrationTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class ObservationFallbackTests(unittest.IsolatedAsyncioTestCase):
+    async def test_pre_settle_frame_is_observation_only_never_confirmation(self):
+        stamp=time.time()
+        async def read(client):return Frame(JPEG,stamp,'static:1')
+        capture=FrameCapture(reader=read)
+        state,frame=await capture.capture(stamp+1,time.perf_counter()+.1,lambda:False,observation_after=stamp-.1)
+        self.assertEqual(state['state'],'observation_only')
+        self.assertFalse(frame['after_action'])
+        self.assertFalse(frame['effect_verified'])
+        self.assertEqual(frame['frame_time'],stamp)
+        state,frame=await capture.capture(stamp+1,time.perf_counter()+.1,lambda:False,observation_after=stamp+.1)
+        self.assertIsNone(frame)
+    async def test_cancelled_observation_is_not_returned(self):
+        stamp=time.time()
+        async def read(client):return Frame(JPEG,stamp,'static:1')
+        state,frame=await FrameCapture(reader=read).capture(stamp+1,time.perf_counter()+.1,lambda:True,observation_after=stamp-.1)
+        self.assertEqual(state['state'],'cancelled');self.assertIsNone(frame)

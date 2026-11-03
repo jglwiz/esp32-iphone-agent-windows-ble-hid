@@ -22,7 +22,6 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from iphone_backend.esp32.serial_transport import Bridge, ascii_key
 from iphone_backend.esp32.service import SerialService
 from iphone_backend.airplay.frames import FrameCapture
-from iphone_backend.absolute_pointer import run as run_absolute
 from iphone_backend.native_pointer import map_target, validate_profile
 from iphone_backend.pointer_guard import guard as verify_pointer_response
 from iphone_backend.calibration import load_unverified
@@ -58,10 +57,11 @@ def create_app(worker=None, *, restart_callback=None, restart_token='', manager_
                 'components': {'esp32': {'ready': bool(owner.status and not owner.fault), 'fault': owner.fault},
                                'airplay': getattr(owner.frames, 'last_observation', {'freshness':'unknown'})},
                 'pid': os.getpid(), 'restart': {'enabled': restart_enabled, 'pending': bool(owner.restart_request)},
-                'visual_calibration_version': 3, 'verified_region_blocks_clicks': False, 'manual_visual_move_supported': True, 'signed_native_mapping': False, 'pointer_response_guard_version': 6, 'scope_validation_guard_version': 1,
+                'visual_calibration_version': 3, 'verified_region_blocks_clicks': False, 'manual_visual_move_supported': True, 'signed_native_mapping': False, 'pointer_response_guard_version': 9, 'capture_observation_fallback_version': 1, 'scope_validation_guard_version': 1,
                 'allow_legacy_frames': owner.frames.allow_legacy, 'hid_diagnostics':copy.deepcopy(owner.hid_diagnostics),
                 'fault': owner.fault, 'status': owner.status, 'status_stale': bool(owner.fault), 'active_id': owner.active_id,
                 'queue_size': owner.jobs.qsize(), 'coordinate_backend': owner.coordinate_backend,
+                'relative_pointer_supported': False,
                 'geometry': owner.geometry, 'profile': owner.profile,
                 'calibration_jobs': [copy.deepcopy(j.result) for j in owner.calibration_jobs.values()],
                 'absolute_capability': {'supported': bool(owner.status and owner.status.get('supports_absolute_pointer')),
